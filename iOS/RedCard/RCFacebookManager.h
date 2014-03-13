@@ -12,5 +12,6 @@
 @interface RCFacebookManager : NSObject
 @property (nonatomic, strong) ACAccountStore *accountStore;
 @property (nonatomic, strong) ACAccount *account;
-- (void)GET:(NSString *)endPoint parameters:(NSDictionary *)parameters;
+@property (nonatomic, readonly) NSString *UID;
+- (void)GET:(NSString *)endPoint parameters:(NSDictionary *)parameters success:(void (^)(id responseObject))success failure:(void (^)(NSError *error))failure;
 @end
