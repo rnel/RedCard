@@ -1,0 +1,44 @@
+
+body {
+  background-color: #eee;
+  font-family: Arial;
+}
+
+#persons-container {
+  width: 660px;
+  margin: 50px auto;
+}
+
+.person-item {
+  position: absolute;
+  background-color: #fff;
+  width: 200px;
+  margin: 10px;
+}
+
+.person-item img {
+  width: 200px;
+  height: 200px;
+}
+
+.person-item p {
+  text-align: center;
+}
+
+#persons-container.contains-1 .person-item {
+  width: 96%;
+  margin: 2%;
+  height: auto;
+}
+
+#persons-container.contains-2 .person-item {
+  width: 46%;
+  margin: 2%;
+  height: auto;
+}
+
+#persons-container.contains-1 .person-item img,
+#persons-container.contains-2 .person-item img {
+  width: 100%;
+  height: auto;
+}
