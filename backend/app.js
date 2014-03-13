@@ -35,8 +35,14 @@ app.use(bodyParser());
 // });
 
 
+/**
+ * init db
+ */
+var db = require('./lib/db');
+
+
 app.post('/addperson', function(req, res) {
-  console.log("Adding person: ", req.body);
+  // console.log("Adding person: ", req.body);
 
   var body = req.body;
   var newPerson = {
@@ -59,11 +65,21 @@ app.post('/addperson', function(req, res) {
   newPerson.url = body.url;
 
   // TODO: Change to add to DB
-  persons.push(newPerson);
+  db.add(newPerson, function(err, result){
+    // console.log("result:", result);
+    if(result){
+      // =replace this with data from db;
+      // console.log("added person:", newPerson);
+      connectedSocket.emit('add person', newPerson);
+      res.json(200, {message: 'Success'});
+    }
+  });
+  
+  // persons.push(newPerson);
+  // console.log(persons[persons.length-1])
+  // connectedSocket.emit('add person', persons[persons.length-1]);
 
-  connectedSocket.emit('add person', persons[persons.length-1]);
-
-  res.json(200, {message: 'Success'});
+  // res.json(200, {message: 'Success'});
 });
 
 
@@ -71,9 +87,13 @@ app.get('/getpersons', function(req, res) {
   console.log("Retrieving all persons...");
 
   // TODO: Retrieve from DB
-
+  db.getAll(function(results){
+    // res.json({result: results});
+    connectedSocket.emit('get person', results);
+    res.json(200, {message: 'Success'});
+  });
   // res.send('Add success');
-  res.json(200, {});
+  // res.json(200, {});
 });
 
 
@@ -81,14 +101,21 @@ app.delete('/removeperson/:id', function(req, res) {
   console.log("Removing person with id: ", req.params.id);
 
   // TODO: Remove from DB
-
-  connectedSocket.emit('remove person', req.params.id);
+  db.del(req.params.id, function(err, result){
+    if(result){
+      connectedSocket.emit('remove person', req.params.id);
+      res.json(200, {message: 'Success'});
+      // db.getAll(function(results){
+      //   res.json({count: results.length, result: results});
+      // });
+    }else{
+      // console.log('delete fail');
+      res.json(500, {error: err});
+    }
+  });
+  // connectedSocket.emit('remove person', req.params.id);
 });
 
-
-// app.get('*', function(req, res) {
-//   res.end('404!');
-// });
 
 
 /***
