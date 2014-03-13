@@ -1,0 +1,16 @@
+{
+  "name": "redcard",
+  "version": "0.0.1",
+  "description": "RedCard",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kienwai",
+  "dependencies": {
+    "express": "4.x",
+    "body-parser": "1.0.0",
+    "morgan": "1.0.0",
+    "socket.io": "^0.9.16"
+  }
+}
