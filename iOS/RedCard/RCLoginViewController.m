@@ -33,6 +33,9 @@
         [alertView show];
     }
     else {
+        UIButton* button = (UIButton *)sender;
+        button.enabled = NO;
+        
         ACAccountStore *accountStore = self.fbManager.accountStore;
         ACAccountType *facebookAccountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
 

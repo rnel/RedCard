@@ -62,7 +62,6 @@
 
 
 - (void)beaconManager:(MNBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
-    UIApplication *application = [UIApplication sharedApplication];
     NSArray *nearOrImmediateBeacons = [beacons filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"proximity == %ld || proximity == %ld",
                                                                             CLProximityImmediate, CLProximityNear]];
     
@@ -70,21 +69,16 @@
         [manager stopRangingBeaconsInRegion:region];
         
         self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            [application endBackgroundTask: self.backgroundTask];
+            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+            localNotification.alertBody = [NSString stringWithFormat:@"Unable to complete sharing info"];
+            localNotification.alertAction = @"Launch app";
+            localNotification.soundName = UILocalNotificationDefaultSoundName;
+            
+            [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
             self.backgroundTask = UIBackgroundTaskInvalid;
         }];
         
         [self getUserData];
-        
-        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-        localNotification.alertBody = [NSString stringWithFormat:@"Sharing info"];
-        localNotification.alertAction = @"Launch app";
-        localNotification.soundName = UILocalNotificationDefaultSoundName;
-        
-        [application presentLocalNotificationNow:localNotification];
-        
-        [application endBackgroundTask: self.backgroundTask];
-        self.backgroundTask = UIBackgroundTaskInvalid;
     }
     
 }
@@ -93,6 +87,8 @@
 
 
 - (void)getUserData {
+    // Trying out using dispatch_group_notify to do wait for both calls to complete and collate the data
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -132,14 +128,19 @@
         NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:responseForProfile];
         parameters[@"url"] = responseForPicture[@"data"][@"url"];
         
+        
+        
         [manager POST:@"http://192.168.1.76:1337/addperson"
            parameters:parameters
               success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  NSLog(@"JSON: %@", responseObject);
+                  [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
+                  self.backgroundTask = UIBackgroundTaskInvalid;
               }
               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  NSLog(@"Error: %@", error);
-              }];
+                  [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
+                  self.backgroundTask = UIBackgroundTaskInvalid;
+              }
+         ];
     });
 }
 @end
