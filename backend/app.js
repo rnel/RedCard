@@ -1,26 +1,28 @@
 // Require the stuff we need
 var express = require('express');
+var app = express();
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-var app = express();
-var http = require('http').createServer(app);
-var io = require('socket.io').listen(http);
 
+
+var http = require('http').createServer(app);
+http.listen(process.env.PORT || 1337);
+
+
+var io = require('socket.io').listen(http);
 var persons = [];
 var connectedSocket;
 
 
-// app.use(bodyParser());
 app.use(logger('dev'));
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-    next();
-  });
-
-http.listen(process.env.PORT || 1337);
+  next();
+});
+app.use(bodyParser());
 
 
 /***
@@ -35,9 +37,10 @@ http.listen(process.env.PORT || 1337);
 
 app.post('/addperson', function(req, res) {
   // console.log("body: ", bodyParser.json);
+  console.log("body: ", req.body);
   console.log("query: ", req.query);
 
-  var query = req.query;
+  var body = req.body;
   var newPerson = {
     'id': '',
     'first_name': '',
@@ -46,7 +49,7 @@ app.post('/addperson', function(req, res) {
   };
 
   for (var key in newPerson) {
-    if (!query.hasOwnProperty(key)) {
+    if (!body.hasOwnProperty(key)) {
       res.statusCode = 400;
       return res.send('Error 400: Post syntax incorrect.');
     };
@@ -59,10 +62,10 @@ app.post('/addperson', function(req, res) {
   //   "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn2/t1/c0.62.200.200/1517506_10151965422058583_1188767168_n.jpg"
   // }
 
-  newPerson.id = query.id;
-  newPerson.first_name = query.first_name;
-  newPerson.last_name = query.last_name;
-  newPerson.url = query.url;
+  newPerson.id = body.id;
+  newPerson.first_name = body.first_name;
+  newPerson.last_name = body.last_name;
+  newPerson.url = body.url;
 
   // check for duplicates
   persons.push(newPerson);
