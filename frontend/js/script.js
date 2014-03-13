@@ -8,12 +8,7 @@ $(document).ready(function(){
   });
 
   function addNewPerson(data) {
-    var len = container.find('.person-item').length;
-
-    if (len < 3) {
-      container.removeClass();
-      container.addClass('contains-'+(len+1));
-    }
+    updateCount(1);
 
     var element = '<div id="' + data.id + '" class="person-item">\
                     <img src="' + data.url + '">\
@@ -25,8 +20,17 @@ $(document).ready(function(){
   }
 
   function removePerson(id) {
+    updateCount(-1);
     msnry.remove( $('#'+id) );
     msnry.layout();
+  }
+
+
+  function updateCount(c) {
+    var len = container.find('.person-item').length;
+
+    container.removeClass();
+    container.addClass('contains-'+(len+c));
   }
 
 
@@ -61,6 +65,10 @@ $(document).ready(function(){
     }
 
     addNewPerson(d);
+  }
+
+  window.b = function() {
+    removePerson("1234567");
   }
 
 });

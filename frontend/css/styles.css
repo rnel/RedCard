@@ -4,9 +4,23 @@ body {
   font-family: Arial;
 }
 
+#container {
+  margin-top: 50px;
+}
+
 #persons-container {
   width: 660px;
   margin: 50px auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+p.msg {
+  color: #ccc;
+  text-align: center;
+  margin-top: 100px;
 }
 
 .person-item {
@@ -41,4 +55,8 @@ body {
 #persons-container.contains-2 .person-item img {
   width: 100%;
   height: auto;
+}
+
+#persons-container[class*='contains-'] p.msg {
+  display: none;
 }
