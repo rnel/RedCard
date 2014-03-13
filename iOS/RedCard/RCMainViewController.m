@@ -9,6 +9,7 @@
 @import Social;
 @import Accounts;
 
+#import <AFNetworking.h>
 #import "RCMainViewController.h"
 #import "RCLoginViewController.h"
 #import "RCFacebookManager.h"
@@ -39,7 +40,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
+
     
     if (!self.fbManager.account) {
         RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
@@ -48,51 +50,63 @@
         [self presentViewController:loginViewController animated:YES completion:nil];
     }
     else{
-        [self.fbManager get:@"me" parameters:nil];
+        [self getUserData];
     }
 }
 
 
 
-
-//- (void)get {
-//    NSURL *requestURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", [self.account valueForKeyPath:@"properties.uid"]]];
-//    
-//    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodGET
-//                                                      URL:requestURL
-//                                               parameters:@{@"redirect":@"true", @"width":[@(self.profileImageView.frame.size.width * 2) stringValue]}];
-//    request.account = self.account;
-//    
-//    [request performRequestWithHandler:^(NSData *data,
-//                                         NSHTTPURLResponse *response,
-//                                         NSError *error) {
-//        
-//        if(!error) {
-//            SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodGET
-//                                              URL:[NSURL URLWithString: @"https://graph.facebook.com/me"]
-//                                  parameters:nil];
-//            request.account = self.account;
-//
-//            [request performRequestWithHandler:^(NSData *data,
-//                                                 NSHTTPURLResponse *response,
-//                                                 NSError *error) {
-//                if (!error){
-//                    NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:data options: NSJSONReadingAllowFragments error: &error];
-//                    NSLog(@"Request %@", JSON);
-//                }
-//                
-//                
-//            }];
-//            
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                self.profileImageView.image = [[UIImage alloc] initWithData:data];
-//            });
-//        }
-//        else{
-//            NSLog(@"error from get%@",error);
-//        }
-//    }];
-//}
+- (void)getUserData {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+    
+    __block NSDictionary* responseForProfile;
+    __block NSDictionary* responseForPicture;
+    
+    dispatch_group_async(group,queue,^{
+        dispatch_group_enter(group);
+        
+        [self.fbManager GET:@"me" parameters:nil
+                    success:^(id responseObject){
+                        responseForProfile = responseObject;
+                        dispatch_group_leave(group);
+                    }
+                    failure:^(NSError *error){
+                        dispatch_group_leave(group);
+                    }];
+    });
+    
+    dispatch_group_async(group,queue,^{
+        dispatch_group_enter(group);
+        
+        [self.fbManager GET:@"me/picture/"
+                 parameters:@{@"redirect":@"false", @"width":[@(self.profileImageView.frame.size.width * 2) stringValue]}
+                    success:^(id responseObject){
+                        responseForPicture = responseObject;
+                        self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: responseObject[@"data"][@"url"]]]];
+                        dispatch_group_leave(group);
+                    }
+                    failure:^(NSError *error){
+                        dispatch_group_leave(group);
+                    }];
+    });
+    
+    dispatch_group_notify(group, queue, ^{
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:responseForProfile];
+        parameters[@"url"] = responseForPicture[@"data"][@"url"];
+        
+        [manager POST:@"http://192.168.1.76:1337/addperson"
+           parameters:parameters
+              success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                  NSLog(@"JSON: %@", responseObject);
+              }
+              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  NSLog(@"Error: %@", error);
+              }];
+    });
+}
 
 
 
