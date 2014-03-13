@@ -25,6 +25,8 @@
     
     self.beaconManager = [[MNBeaconManager alloc] init];
     self.regionObserver = [[RCRegionObserver alloc] init];
+    
+    [self.beaconManager registerBeaconRegion:region];
     [self.beaconManager addObserver:self.regionObserver forBeaconRegion:region];
 
     self.window.tintColor = [UIColor colorWithRed:0.855 green:0.000 blue:0.173 alpha:1.000];

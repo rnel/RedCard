@@ -4,3 +4,5 @@ NSString * const RCProximityIdentifier = @"com.monokromik.redcard";
 NSInteger const RCBeaconMajorBlue = 33363;
 NSInteger const RCBeaconMajorPurple = 2506;
 NSInteger const RCBeaconMajorGreen = 5226;
+
+CGFloat const RCFBProfileImageWidth = 240;

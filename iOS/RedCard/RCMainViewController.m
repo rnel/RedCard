@@ -13,6 +13,7 @@
 #import "RCMainViewController.h"
 #import "RCLoginViewController.h"
 #import "RCFacebookManager.h"
+#import "RCConstants.h"
 
 
 @interface RCMainViewController ()
@@ -40,8 +41,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-
     
     if (!self.fbManager.account) {
         RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
@@ -82,7 +81,7 @@
         dispatch_group_enter(group);
         
         [self.fbManager GET:@"me/picture/"
-                 parameters:@{@"redirect":@"false", @"width":[@(self.profileImageView.frame.size.width * 2) stringValue]}
+                 parameters:@{@"redirect":@"false",  @"width":[@(RCFBProfileImageWidth * 2) stringValue]}
                     success:^(id responseObject){
                         responseForPicture = responseObject;
                         self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: responseObject[@"data"][@"url"]]]];
