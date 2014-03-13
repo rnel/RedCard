@@ -14,6 +14,10 @@ var persons = [];
 var connectedSocket;
 
 
+/***
+  Express
+ ***/
+
 app.use(logger('dev'));
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -25,10 +29,6 @@ app.use(function(req, res, next) {
 app.use(bodyParser());
 
 
-/***
-  Express
- ***/
-
 // app.all('*', function(req, res, next) {
 //   res.writeHead(200, { 'Content-Type': 'text/plain' });
 //   next();
@@ -36,9 +36,7 @@ app.use(bodyParser());
 
 
 app.post('/addperson', function(req, res) {
-  // console.log("body: ", bodyParser.json);
-  console.log("body: ", req.body);
-  console.log("query: ", req.query);
+  console.log("Adding person: ", req.body);
 
   var body = req.body;
   var newPerson = {
@@ -55,24 +53,36 @@ app.post('/addperson', function(req, res) {
     };
   };
 
-  // {
-  //   "id": "1234567",
-  //   "first_name": "Kien Wai",
-  //   "last_name": "E",
-  //   "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn2/t1/c0.62.200.200/1517506_10151965422058583_1188767168_n.jpg"
-  // }
-
   newPerson.id = body.id;
   newPerson.first_name = body.first_name;
   newPerson.last_name = body.last_name;
   newPerson.url = body.url;
 
-  // check for duplicates
+  // TODO: Change to add to DB
   persons.push(newPerson);
-  sendPerson();
 
-  res.send(newPerson);
-  res.json(true);
+  connectedSocket.emit('add person', persons[persons.length-1]);
+
+  res.json(200, {message: 'Success'});
+});
+
+
+app.get('/getpersons', function(req, res) {
+  console.log("Retrieving all persons...");
+
+  // TODO: Retrieve from DB
+
+  // res.send('Add success');
+  res.json(200, {});
+});
+
+
+app.delete('/removeperson/:id', function(req, res) {
+  console.log("Removing person with id: ", req.params.id);
+
+  // TODO: Remove from DB
+
+  connectedSocket.emit('remove person', req.params.id);
 });
 
 
@@ -92,12 +102,4 @@ io
 });
 
 
-
-
-function sendPerson() {
-  console.log(persons);
-  console.log(persons[persons.length-1]);
-
-  connectedSocket.emit('add person', persons[persons.length-1]);
-}
 
