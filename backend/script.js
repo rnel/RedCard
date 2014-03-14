@@ -4,10 +4,18 @@ $(function() {
   var socket = io.connect('http://localhost:1337/', {'force new connection': true});
 
   socket.on('add person', function (per) {
-    console.log(per)
+    console.log("add: ", per);
   });
 
+  socket.on('remove person', function (id) {
+    console.log("remove:", id);
+  });
 
+  socket.on('get person', function (pers) {
+    console.log("persons:", pers);
+  });
+
+  // for beacon device
   $('.addPerson').on('click', function() {
     $.ajax({
           url: 'http://localhost:1337/addperson',
@@ -19,14 +27,25 @@ $(function() {
         });
   });
 
-
+  // for beacon device
   $('.removePerson').on('click', function() {
     $.ajax({
         url: 'http://localhost:1337/removeperson/1',
         type: 'DELETE'
       })
       .success(function(data) {
-        console.log("delete");
+        console.log("delete:", data);
+      });
+  });
+
+  // frontend
+  $('.getPerson').on('click', function() {
+    $.ajax({
+        url: 'http://localhost:1337/getpersons',
+        type: 'GET'
+      })
+      .success(function(data) {
+        console.log("get:", data);
       });
   });
 });

@@ -40,7 +40,7 @@ app.use(bodyParser());
  */
 var db = require('./lib/db');
 
-
+// For beacon device
 app.post('/addperson', function(req, res) {
   // console.log("Adding person: ", req.body);
 
@@ -66,13 +66,12 @@ app.post('/addperson', function(req, res) {
 
   // TODO: Change to add to DB
   db.add(newPerson, function(err, result){
-    // console.log("result:", result);
-    if(result){
-      // =replace this with data from db;
-      // console.log("added person:", newPerson);
+    if(err){
+      connectedSocket.emit('add person', -1);
+    }else{
       connectedSocket.emit('add person', newPerson);
-      res.json(200, {message: 'Success'});
     }
+    res.json(200, {message: 'Success'});
   });
   
   // persons.push(newPerson);
@@ -82,38 +81,32 @@ app.post('/addperson', function(req, res) {
   // res.json(200, {message: 'Success'});
 });
 
-
+// For Frontend
 app.get('/getpersons', function(req, res) {
   console.log("Retrieving all persons...");
 
   // TODO: Retrieve from DB
-  db.getAll(function(results){
-    // res.json({result: results});
-    connectedSocket.emit('get person', results);
-    res.json(200, {message: 'Success'});
+  db.getAll(function(err, results){
+    res.json({err: err, result: results});
   });
   // res.send('Add success');
   // res.json(200, {});
 });
 
-
+// For beacon device
 app.delete('/removeperson/:id', function(req, res) {
   console.log("Removing person with id: ", req.params.id);
 
   // TODO: Remove from DB
   db.del(req.params.id, function(err, result){
-    if(result){
+    if(err){
+      connectedSocket.emit('remove person', -1);
+      res.json(500, {error: err});
+    }else{
       connectedSocket.emit('remove person', req.params.id);
       res.json(200, {message: 'Success'});
-      // db.getAll(function(results){
-      //   res.json({count: results.length, result: results});
-      // });
-    }else{
-      // console.log('delete fail');
-      res.json(500, {error: err});
     }
   });
-  // connectedSocket.emit('remove person', req.params.id);
 });
 
 
