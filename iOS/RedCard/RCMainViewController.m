@@ -13,6 +13,7 @@
 #import "RCMainViewController.h"
 #import "RCLoginViewController.h"
 #import "RCFacebookManager.h"
+#import "RCConstants.h"
 
 
 @interface RCMainViewController ()
@@ -40,8 +41,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-
     
     if (!self.fbManager.account) {
         RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
@@ -50,62 +49,67 @@
         [self presentViewController:loginViewController animated:YES completion:nil];
     }
     else{
-        [self getUserData];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+            [self getUserData];
+        });
     }
 }
 
 
 
 - (void)getUserData {
+    // Trying out using dispatch_semaphore to do wait for both calls to complete and collate the data
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_group_t group = dispatch_group_create();
     
     __block NSDictionary* responseForProfile;
     __block NSDictionary* responseForPicture;
-    
-    dispatch_group_async(group,queue,^{
-        dispatch_group_enter(group);
-        
+
+    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+    dispatch_async(queue, ^{
+
         [self.fbManager GET:@"me" parameters:nil
                     success:^(id responseObject){
                         responseForProfile = responseObject;
-                        dispatch_group_leave(group);
+                        dispatch_semaphore_signal(sema);
                     }
                     failure:^(NSError *error){
-                        dispatch_group_leave(group);
+                        dispatch_semaphore_signal(sema);
                     }];
     });
-    
-    dispatch_group_async(group,queue,^{
-        dispatch_group_enter(group);
-        
+
+
+    dispatch_async(queue, ^{
         [self.fbManager GET:@"me/picture/"
-                 parameters:@{@"redirect":@"false", @"width":[@(self.profileImageView.frame.size.width * 2) stringValue]}
+                 parameters:@{@"redirect":@"false", @"width":[@(RCFBProfileImageWidth * 2) stringValue]}
                     success:^(id responseObject){
                         responseForPicture = responseObject;
-                        self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: responseObject[@"data"][@"url"]]]];
-                        dispatch_group_leave(group);
+                        self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:responseForPicture[@"data"][@"url"]]]];
+                        dispatch_semaphore_signal(sema);
                     }
                     failure:^(NSError *error){
-                        dispatch_group_leave(group);
+                        dispatch_semaphore_signal(sema);
                     }];
+
     });
+
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:responseForProfile];
+    parameters[@"url"] = responseForPicture[@"data"][@"url"];
     
-    dispatch_group_notify(group, queue, ^{
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:responseForProfile];
-        parameters[@"url"] = responseForPicture[@"data"][@"url"];
-        
-        [manager POST:@"http://192.168.1.76:1337/addperson"
-           parameters:parameters
-              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  NSLog(@"JSON: %@", responseObject);
-              }
-              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  NSLog(@"Error: %@", error);
-              }];
-    });
+    [manager POST:@"http://192.168.1.76:1337/addperson"
+       parameters:parameters
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              NSLog(@"JSON: %@", responseObject);
+          }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"Error: %@", error);
+          }
+     ];
 }
 
 

@@ -11,8 +11,8 @@ $(function() {
   $('.addPerson').on('click', function() {
     $.ajax({
           url: 'http://localhost:1337/addperson',
-          dataType: 'text',
           data: {"id": "1", "url": "http://ignoranthistorian.com/wp-content/uploads/2013/11/apple-logo.jpg", "first_name": "ali", "last_name": "baba"},
+          dataType: 'text',
           type: 'POST'
         })
         .success(function(data) {
@@ -20,4 +20,14 @@ $(function() {
         });
   });
 
+
+  $('.removePerson').on('click', function() {
+    $.ajax({
+        url: 'http://localhost:1337/removeperson/1',
+        type: 'DELETE'
+      })
+      .success(function(data) {
+        console.log("delete");
+      });
+  });
 });

@@ -66,7 +66,9 @@ p.msg {
   margin: 2%;
   height: auto;
 }
+
 */
 #persons-container[class*='contains-'] p.msg {
   display: none;
 }
+
