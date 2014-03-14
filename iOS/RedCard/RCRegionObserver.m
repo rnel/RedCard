@@ -13,7 +13,9 @@
 
 @interface RCRegionObserver ()
 @property (nonatomic, strong) RCFacebookManager *fbManager;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *HTTPRequestOperationManager;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTask;
+@property (nonatomic, strong) UILocalNotification *localNotification;
 @end
 
 
@@ -27,7 +29,9 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-       self.fbManager = [[RCFacebookManager alloc] init];
+        self.fbManager = [[RCFacebookManager alloc] init];
+        self.HTTPRequestOperationManager = [AFHTTPRequestOperationManager manager];
+        self.localNotification = [[UILocalNotification alloc] init];
     }
     return self;
 }
@@ -41,22 +45,29 @@
 #pragma mark - MNBeaconManagerObserver
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)beaconManager:(MNBeaconManager *)manager didEnterRegion:(CLBeaconRegion *)region {
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.alertBody = [NSString stringWithFormat:@"Entering region: %@", region.identifier];
-    localNotification.alertAction = @"Launch app";
-    localNotification.soundName = UILocalNotificationDefaultSoundName;
-    
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    [self presentLocalNotificationNowWithAlertBody:@"Entering region" action:@"Launch app"];
 }
 
 
 - (void)beaconManager:(MNBeaconManager *)manager didExitRegion:(CLBeaconRegion *)region {
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.alertBody = [NSString stringWithFormat:@"Exiting beacons: %@", region.identifier];
-    localNotification.alertAction = @"Launch app";
-    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    __block UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+        backgroundTask = UIBackgroundTaskInvalid;
+    }];
     
-    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.UID] parameters:nil
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         [self presentLocalNotificationNowWithAlertBody:@"Info removed" action:@"Launch app"];
+                                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                                         backgroundTask = UIBackgroundTaskInvalid;
+                                     }
+                                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                                         backgroundTask = UIBackgroundTaskInvalid;
+                                     }
+     ];
+    [self presentLocalNotificationNowWithAlertBody:@"Leaving region" action:@"Launch app"];
+
 }
 
 
@@ -69,10 +80,7 @@
         [manager stopRangingBeaconsInRegion:region];
         
         self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-            localNotification.alertBody = [NSString stringWithFormat:@"Unable to complete sharing info"];
-            localNotification.alertAction = @"Launch app";
-            localNotification.soundName = UILocalNotificationDefaultSoundName;
+            [self presentLocalNotificationNowWithAlertBody:@"Unable to complete sharing" action:@"Launch app"];
             
             [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
             self.backgroundTask = UIBackgroundTaskInvalid;
@@ -88,21 +96,19 @@
 
 - (void)getUserData {
     // Trying out using dispatch_group_notify to do wait for both calls to complete and collate the data
+    AFHTTPRequestOperationManager *manager = self.HTTPRequestOperationManager;
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    
+    __block NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_group_t group = dispatch_group_create();
-    
-    __block NSDictionary* responseForProfile;
-    __block NSDictionary* responseForPicture;
+
     
     dispatch_group_async(group,queue,^{
         dispatch_group_enter(group);
         
         [self.fbManager GET:@"me" parameters:nil
                     success:^(id responseObject){
-                        responseForProfile = responseObject;
+                        [parameters addEntriesFromDictionary:responseObject];
                         dispatch_group_leave(group);
                     }
                     failure:^(NSError *error){
@@ -112,11 +118,12 @@
     
     dispatch_group_async(group,queue,^{
         dispatch_group_enter(group);
+        NSString *widthAndHeight =[@(RCFBProfileImageWidth * 2) stringValue];
         
         [self.fbManager GET:@"me/picture/"
-                 parameters:@{@"redirect":@"false", @"width":[@(RCFBProfileImageWidth * 2) stringValue]}
+                 parameters:@{@"redirect":@"false", @"width":widthAndHeight, @"height":widthAndHeight}
                     success:^(id responseObject){
-                        responseForPicture = responseObject;
+                        [parameters addEntriesFromDictionary:responseObject[@"data"]];
                         dispatch_group_leave(group);
                     }
                     failure:^(NSError *error){
@@ -125,22 +132,27 @@
     });
     
     dispatch_group_notify(group, queue, ^{
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:responseForProfile];
-        parameters[@"url"] = responseForPicture[@"data"][@"url"];
-        
-        
-        
-        [manager POST:@"http://192.168.1.76:1337/addperson"
-           parameters:parameters
-              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
-                  self.backgroundTask = UIBackgroundTaskInvalid;
-              }
-              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
-                  self.backgroundTask = UIBackgroundTaskInvalid;
-              }
+        [manager  POST:@"http://192.168.1.76:1337/addperson"
+            parameters:parameters
+               success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                   [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];
+                   [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
+                   self.backgroundTask = UIBackgroundTaskInvalid;
+               }
+               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                   [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
+                   self.backgroundTask = UIBackgroundTaskInvalid;
+               }
          ];
     });
+}
+
+
+- (void)presentLocalNotificationNowWithAlertBody:(NSString *)bodyString action:(NSString *)actionString {
+    self.localNotification.alertBody = bodyString;
+    self.localNotification.alertAction = actionString;
+    self.localNotification.soundName = UILocalNotificationDefaultSoundName;
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotification];
 }
 @end

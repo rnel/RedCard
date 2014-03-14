@@ -61,33 +61,32 @@
     // Trying out using dispatch_semaphore to do wait for both calls to complete and collate the data
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
-    __block NSDictionary* responseForProfile;
-    __block NSDictionary* responseForPicture;
+    __block NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
 
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-    dispatch_async(queue, ^{
 
+    dispatch_async(queue, ^{
         [self.fbManager GET:@"me" parameters:nil
                     success:^(id responseObject){
-                        responseForProfile = responseObject;
+                        [parameters addEntriesFromDictionary:responseObject];
                         dispatch_semaphore_signal(sema);
                     }
                     failure:^(NSError *error){
                         dispatch_semaphore_signal(sema);
                     }];
     });
-
 
     dispatch_async(queue, ^{
+        NSString *widthAndHeight =[@(RCFBProfileImageWidth * 2) stringValue];
         [self.fbManager GET:@"me/picture/"
-                 parameters:@{@"redirect":@"false", @"width":[@(RCFBProfileImageWidth * 2) stringValue]}
+                 parameters:@{@"redirect":@"false", @"width":widthAndHeight, @"height":widthAndHeight}
                     success:^(id responseObject){
-                        responseForPicture = responseObject;
-                        self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:responseForPicture[@"data"][@"url"]]]];
+                        [parameters addEntriesFromDictionary:responseObject[@"data"]];
                         dispatch_semaphore_signal(sema);
+                        
+                        self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:parameters[@"url"]]]];
+
                     }
                     failure:^(NSError *error){
                         dispatch_semaphore_signal(sema);
@@ -97,14 +96,11 @@
 
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:responseForProfile];
-    parameters[@"url"] = responseForPicture[@"data"][@"url"];
     
     [manager POST:@"http://192.168.1.76:1337/addperson"
        parameters:parameters
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"JSON: %@", responseObject);
+              NSLog(@"Sent: %@", parameters);
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"Error: %@", error);

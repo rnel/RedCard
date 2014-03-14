@@ -20,6 +20,7 @@ $(function() {
     $.ajax({
           url: 'http://localhost:1337/addperson',
           data: {"id": "1", "url": "http://ignoranthistorian.com/wp-content/uploads/2013/11/apple-logo.jpg", "first_name": "ali", "last_name": "baba"},
+          dataType: 'text',
           type: 'POST'
         })
         .success(function(data) {
