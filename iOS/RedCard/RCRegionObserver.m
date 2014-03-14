@@ -118,9 +118,10 @@
     
     dispatch_group_async(group,queue,^{
         dispatch_group_enter(group);
+        NSString *widthAndHeight =[@(RCFBProfileImageWidth * 2) stringValue];
         
         [self.fbManager GET:@"me/picture/"
-                 parameters:@{@"redirect":@"false", @"width":[@(RCFBProfileImageWidth * 2) stringValue]}
+                 parameters:@{@"redirect":@"false", @"width":widthAndHeight, @"height":widthAndHeight}
                     success:^(id responseObject){
                         [parameters addEntriesFromDictionary:responseObject[@"data"]];
                         dispatch_group_leave(group);
