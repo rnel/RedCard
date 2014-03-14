@@ -7,31 +7,70 @@ $(document).ready(function(){
     itemSelector: '.person-item'
   });
 
+  var source = $("#card-template").html();
+  var template = Handlebars.compile(source);
+  var containerWidth = container.width();
+
   function addNewPerson(data) {
-    var len = container.find('.person-item').length;
+    var element = template(data),
+      newPersonEl = $(element).appendTo(container);
+    
+    updateItemsWidth();
+    msnry.appended(newPersonEl);
 
-    if (len < 3) {
-      container.removeClass();
-      container.addClass('contains-'+(len+1));
-    }
+    // requires relayout
+    msnry.layout();
 
-    var element = '<div id="' + data.id + '" class="person-item">\
-                    <img src="' + data.url + '">\
-                    <p>' + data.first_name + ' ' + data.last_name + '</p>\
-                  </div>';
-
-    var newPersonEl = $(element).prependTo(container);
-    msnry.prepended(newPersonEl);
+    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
   }
 
   function removePerson(id) {
-    msnry.remove( $('#'+id) );
+    msnry.remove( $('#fb'+id) );
+    updateItemsWidth(true);
     msnry.layout();
+  }
+
+  function updateCount(count) {
+    container.removeClass();
+
+    if (count !== 0) {
+      container.addClass('contains-' + count);
+    }
+  }
+
+  function updateItemsWidth(removed) {
+    var itemsEl = container.find('.person-item'),
+      len = itemsEl.length,
+      itemWidth,
+      maxCols = 5;
+
+      if (removed) {
+        --len;
+      }
+
+    if (len <= 2) {
+      itemWidth = containerWidth / len;
+    }
+    else {
+      var cols = Math.ceil(len/2);
+
+      if (cols < maxCols) {
+        itemWidth = containerWidth / Math.ceil(len/2);
+      }
+      else {
+        itemWidth = containerWidth / maxCols;
+      }
+
+    }
+
+    itemsEl.width(itemWidth);
+    updateCount(len);
   }
 
 
   // Socket IO
-  var socket = io.connect('http://localhost:1337/', {'force new connection': true});
+  // var socket = io.connect('http://localhost:1337/', {'force new connection': true});
+  var socket = io.connect('http://192.168.1.76:1337/', {'force new connection': true});
 
   socket.on('connect', function(){
     console.log('connected');
@@ -51,16 +90,22 @@ $(document).ready(function(){
     removePerson(id);
   });
 
-  //test
-  window.a = function() {
+
+  // test
+  window.a = function(id) {
     var d = {
-      "id": "1234567",
+      "id": id || "1234567",
       "first_name": "Lorem",
-      "last_name": "Ipsum",
+      "last_name": "Ipsum " + id,
       "url": "http://www.faithlineprotestants.org/wp-content/uploads/2010/12/facebook-default-no-profile-pic.jpg"
     }
 
     addNewPerson(d);
   }
 
+  window.b = function(id) {
+    removePerson(id || "1234567");
+  }
+
 });
+
