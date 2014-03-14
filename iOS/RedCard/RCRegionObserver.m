@@ -57,7 +57,7 @@
     
     [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.UID] parameters:nil
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];
+                                         [self presentLocalNotificationNowWithAlertBody:@"Info removed" action:@"Launch app"];
                                          [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
                                          backgroundTask = UIBackgroundTaskInvalid;
                                      }
