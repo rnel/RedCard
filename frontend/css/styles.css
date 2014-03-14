@@ -1,16 +1,17 @@
 
 body {
   background-color: #eee;
-  font-family: Arial;
+  font-family: 'Helvetica Neue', Helvetica, Arial;
+  color: #888;
 }
 
 #container {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 #persons-container {
   width: 1280px;
-  margin: 50px auto;
+  margin: 20px auto;
 }
 
 h2 {
@@ -25,16 +26,21 @@ p.msg {
 
 .person-item {
   position: absolute;
-  background-color: #fff;
   width: 300px;
-  /*margin: 10px;*/
 }
 
-.person-item.male {
+.person-item .item-wrapper {
+  margin: 2%;
+  background-color: #fff;
+  overflow: hidden;
+  box-shadow: 0 1px 1px 1px rgba(204,204,204,.5);
+}
+
+.person-item .item-wrapper.male {
   background-color: #0080ff;
 }
 
-.person-item.female {
+.person-item .item-wrapper.female {
   background-color: #ff0080;
 }
 
@@ -48,26 +54,70 @@ p.msg {
   -o-border-radius: 50%;
   border-radius: 50%;
   margin: 5% auto;
-  border: 1px solid #ccc;
+  border: 1px solid #e7e7e7;
 }
 
-.person-item p {
+.person-details {
+  border-top: 1px solid #e7e7e7;
+  padding: 16px 15px 5px 15px;
+}
+
+.person-details p {
   text-align: center;
-}
-/*
-#persons-container.contains-1 .person-item {
-  width: 96%;
-  margin: 2%;
-  height: auto;
+  margin-top: 0;
 }
 
-#persons-container.contains-2 .person-item {
-  width: 46%;
-  margin: 2%;
-  height: auto;
+.person-details .person-name-location {
+  font-size: 16px;
 }
 
-*/
+.person-details .person-name-location .person-name {
+  font-size: 20px;
+}
+
+.person-details .person-name-location .location {
+  font-size: 20px;
+}
+
+.person-details .age {
+  font-size: 16px;
+  color: #a7a7a7;
+}
+
+.person-details .bio {
+  height: 34px;
+  color: #a7a7a7;
+  font-size: 14px;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+#persons-container.contains-1 {
+  width: 640px;
+}
+
+#persons-container.contains-2 {
+  width: 1280px;
+}
+
+#persons-container.contains-3,
+#persons-container.contains-4 {
+  width: 560px;
+}
+
+#persons-container.contains-5,
+#persons-container.contains-6 {
+  width: 840px;
+}
+
+#persons-container.contains-7,
+#persons-container.contains-8 {
+  width: 1024px;
+}
+
 #persons-container[class*='contains-'] p.msg {
   display: none;
 }

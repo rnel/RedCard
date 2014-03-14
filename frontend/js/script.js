@@ -9,11 +9,14 @@ $(document).ready(function(){
 
   var source = $("#card-template").html();
   var template = Handlebars.compile(source);
-  var containerWidth = container.width();
 
   function addNewPerson(data) {
-    var element = template(data),
-      newPersonEl = $(element).appendTo(container);
+    var element,
+      newPersonEl;
+
+    data.age = (data.birthday) ? getAge(data.birthday) : 'SECRET';
+    element = template(data);
+    newPersonEl = $(element).appendTo(container);
     
     updateItemsWidth();
     msnry.appended(newPersonEl);
@@ -21,7 +24,10 @@ $(document).ready(function(){
     // requires relayout
     msnry.layout();
 
-    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    var len = container.find('.person-item').length;
+    if (len > 10) {
+      $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    }
   }
 
   function removePerson(id) {
@@ -39,14 +45,18 @@ $(document).ready(function(){
   }
 
   function updateItemsWidth(removed) {
-    var itemsEl = container.find('.person-item'),
+    var containerWidth,
+      itemsEl = container.find('.person-item'),
       len = itemsEl.length,
       itemWidth,
       maxCols = 5;
 
-      if (removed) {
-        --len;
-      }
+    if (removed) {
+      --len;
+    }
+
+    updateCount(len);
+    containerWidth = container.width();
 
     if (len <= 2) {
       itemWidth = containerWidth / len;
@@ -64,7 +74,17 @@ $(document).ready(function(){
     }
 
     itemsEl.width(itemWidth);
-    updateCount(len);
+  }
+
+  function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
 
 
@@ -97,6 +117,10 @@ $(document).ready(function(){
       "id": id || "1234567",
       "first_name": "Lorem",
       "last_name": "Ipsum " + id,
+      "gender": "female",
+      "location": "Singapore",
+      "birthday": "12/20/1981",
+      "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "url": "http://www.faithlineprotestants.org/wp-content/uploads/2010/12/facebook-default-no-profile-pic.jpg"
     }
 
