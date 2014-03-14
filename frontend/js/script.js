@@ -9,19 +9,48 @@ $(document).ready(function(){
 
   var source = $("#card-template").html();
   var template = Handlebars.compile(source);
-  var containerWidth = container.width();
+
+  function addAllPersons(data) {
+    container.empty();
+
+    $.each(data, function(index, value){
+      addNewPerson(value);
+    });
+  }
 
   function addNewPerson(data) {
-    var element = template(data),
+    var element,
+      newPersonEl;
+
+    var existingElement = container.find('#fb'+data.id);
+    if (existingElement.length !== 0) {
+      existingElement.find('.person-name').text(data.first_name + ' ' + data.last_name)
+                     .find('.location').text(data.location)
+                     .find('.location').text(data.location)
+                     .find('.age').text(data.age)
+                     .find('.bio').text(data.bio);
+
+      var profilePhotoEl = existingElement.find('img');
+      if (profilePhotoEl.attr('src') != data.url) {
+        profilePhotoEl.attr('src', data.url);
+      }
+    }
+    else {
+      data.age = (data.birthday) ? getAge(data.birthday) : 'SECRET';
+      element = template(data);
       newPersonEl = $(element).appendTo(container);
+      
+      updateItemsWidth();
+      msnry.appended(newPersonEl);
+
+      // requires relayout
+      msnry.layout();  
+    }
     
-    updateItemsWidth();
-    msnry.appended(newPersonEl);
-
-    // requires relayout
-    msnry.layout();
-
-    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    var len = container.find('.person-item').length;
+    if (len > 10) {
+      $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    }
   }
 
   function removePerson(id) {
@@ -39,14 +68,18 @@ $(document).ready(function(){
   }
 
   function updateItemsWidth(removed) {
-    var itemsEl = container.find('.person-item'),
+    var containerWidth,
+      itemsEl = container.find('.person-item'),
       len = itemsEl.length,
       itemWidth,
       maxCols = 5;
 
-      if (removed) {
-        --len;
-      }
+    if (removed) {
+      --len;
+    }
+
+    updateCount(len);
+    containerWidth = container.width();
 
     if (len <= 2) {
       itemWidth = containerWidth / len;
@@ -64,7 +97,17 @@ $(document).ready(function(){
     }
 
     itemsEl.width(itemWidth);
-    updateCount(len);
+  }
+
+  function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
 
 
@@ -72,7 +115,7 @@ $(document).ready(function(){
   // var socket = io.connect('http://localhost:1337/', {'force new connection': true});
   var socket = io.connect('http://192.168.1.76:1337/', {'force new connection': true});
 
-  socket.on('connect', function(){
+  socket.on('connect', function(msg){
     console.log('connected');
   });
 
@@ -80,13 +123,18 @@ $(document).ready(function(){
     console.log('disconected');
   });
 
+  socket.on('add all person', function (data){
+    console.log('add all', data);
+    addAllPersons(data);
+  });
+
   socket.on('add person', function (data){
-    console.log('data', data);
+    console.log('add', data);
     addNewPerson(data);
   });
 
   socket.on('remove person', function (id){
-    console.log('id', id);
+    console.log('remove', id);
     removePerson(id);
   });
 
@@ -97,6 +145,10 @@ $(document).ready(function(){
       "id": id || "1234567",
       "first_name": "Lorem",
       "last_name": "Ipsum " + id,
+      "gender": "female",
+      "location": "Singapore",
+      "birthday": "12/20/1981",
+      "bio": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "url": "http://www.faithlineprotestants.org/wp-content/uploads/2010/12/facebook-default-no-profile-pic.jpg"
     }
 
