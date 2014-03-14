@@ -10,6 +10,14 @@ $(document).ready(function(){
   var source = $("#card-template").html();
   var template = Handlebars.compile(source);
 
+  function addAllPersons(data) {
+    container.empty();
+
+    $.each(data, function(index, value){
+      addNewPerson(value);
+    });
+  }
+
   function addNewPerson(data) {
     var element,
       newPersonEl;
@@ -107,7 +115,7 @@ $(document).ready(function(){
   // var socket = io.connect('http://localhost:1337/', {'force new connection': true});
   var socket = io.connect('http://192.168.1.76:1337/', {'force new connection': true});
 
-  socket.on('connect', function(){
+  socket.on('connect', function(msg){
     console.log('connected');
   });
 
@@ -115,13 +123,18 @@ $(document).ready(function(){
     console.log('disconected');
   });
 
+  socket.on('add all person', function (data){
+    console.log('add all', data);
+    addAllPersons(data);
+  });
+
   socket.on('add person', function (data){
-    console.log('data', data);
+    console.log('add', data);
     addNewPerson(data);
   });
 
   socket.on('remove person', function (id){
-    console.log('id', id);
+    console.log('remove', id);
     removePerson(id);
   });
 

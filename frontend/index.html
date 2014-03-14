@@ -32,13 +32,16 @@
 
   <script id="card-template" type="text/x-handlebars-template">
 
-    <div id="fb{{id}}" class="person-item {{gender}}">
-      <div class="item-wrapper">
+    <div id="fb{{id}}" class="person-item">
+      <div class="item-wrapper {{gender}}">
         <img src="{{url}}">
         <div class="person-details">
-          <p class="person-name-location"><span class="person-name">{{first_name}} {{last_name}}</span> from <span class="location">{{location}}</span></p>
-          <p class="age">{{age}}</p>
-          <p class="bio">{{bio}}</p>
+          <p class="person-name">{{first_name}} {{last_name}}</p>
+          <!-- <p class="bio">{{bio}}</p> -->
+          
+        </div>
+        <div class="location-holder">
+          <p class="location">{{location}}</p>
         </div>
       </div>
     </div>
