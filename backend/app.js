@@ -55,14 +55,15 @@ app.post('/addperson', function(req, res) {
   //   };
   // };
 
-  newPerson.id = body.id;
-  newPerson.first_name = body.first_name;
-  newPerson.last_name = body.last_name;
-  newPerson.url = body.url;
-  newPerson.gender = body.gender;
-  newPerson.location = body.location.name;
-  newPerson.bio = body.bio;
-  newPerson.birthday = body.birthday;
+  newPerson.id = (body.id) ? body.id : '';
+  newPerson.first_name = (body.first_name) ? body.first_name : '' ;
+  newPerson.last_name = (body.last_name) ? body.last_name : '';
+  newPerson.url = (body.url) ? body.url: '';
+  newPerson.gender = (body.gender) ? body.gender : '';
+  newPerson.location = (body.location) ? body.location.name : '';
+  newPerson.bio = (body.bio) ? body.bio : '';
+  newPerson.birthday = (body.birthday) ? body.birthday : '';
+  // newPerson.birthday = (body.birthday) ? body.birthday : '';
 
   // TODO: Change to add to DB
   db.add(newPerson, function(err, result){
