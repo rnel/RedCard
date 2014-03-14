@@ -29,7 +29,11 @@ var RCUserSchema = new Schema({
   "first_name": String,
   "last_name": String,
   "url": String,
-  "status": Boolean
+  "status": Boolean,
+  "gender": String, 
+  "location": String, 
+  "bio": String, 
+  "birthday": String
 });
 
 
@@ -48,40 +52,54 @@ var db = {
   /**
    * Add New User
    */
+  findOne: function(userId){
+    console.log('userId:', userId);
+    RCUser.find({id: userId}, function(err, user){
+      if(err) return false;
+      return user;
+      console.log('user:', user);
+    });
+  },
+
   add: function(user, cb){
     var newUser = new RCUser(user);
     newUser.status = 1;
-    newUser.save(function(err) {
-      // console.log(err);
-      if (err) return false;
-      cb(err, true);
+    // console.log (this.findOne(newUser.id));
+    RCUser.findOne({id: newUser.id}, function(err, user){
+      if(err) return false;
+      // console.log('user:', user.id);
+      if( user ){
+        // update
+        user.gender = newUser.gender || 'M';
+        user.location = newUser.location || 'location';
+        user.bio = newUser.bio || 'string';
+        user.birthday = newUser.birthday || 'jan 1, 1990';
+
+        user.save(function(err){
+          cb(err, user);
+        });
+      }else{
+        // new
+        newUser.save(function(err) {
+          cb(err, newUser);
+        });
+      }
     });
   },
 
   del: function(userid, cb){
-    // console.log('deleteUser id', userid);
     RCUser.findOne({id: userid}, function(err, user){
-      // console.log("user:", user);
       if(user){
-        // console.log("remove id:", user.id);
         RCUser.remove({id: user.id}, function(err){
-          if (err) return false;
-          cb(err, true);
+          cb(err, user.id);
         });
-      }else{
-        cb('id not found', false);
       }
     });
   },
 
   getAll: function(cb){
     RCUser.find(function(err, users){
-      if(users){
-        // console.log('getUsers:', users);
-        cb(users);
-        return users;
-      }
-      return false;
+      cb(err, users);
     });
   },
 
