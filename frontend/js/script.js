@@ -14,16 +14,31 @@ $(document).ready(function(){
     var element,
       newPersonEl;
 
-    data.age = (data.birthday) ? getAge(data.birthday) : 'SECRET';
-    element = template(data);
-    newPersonEl = $(element).appendTo(container);
+    var existingElement = container.find('#fb'+data.id);
+    if (existingElement.length !== 0) {
+      existingElement.find('.person-name').text(data.first_name + ' ' + data.last_name)
+                     .find('.location').text(data.location)
+                     .find('.location').text(data.location)
+                     .find('.age').text(data.age)
+                     .find('.bio').text(data.bio);
+
+      var profilePhotoEl = existingElement.find('img');
+      if (profilePhotoEl.attr('src') != data.url) {
+        profilePhotoEl.attr('src', data.url);
+      }
+    }
+    else {
+      data.age = (data.birthday) ? getAge(data.birthday) : 'SECRET';
+      element = template(data);
+      newPersonEl = $(element).appendTo(container);
+      
+      updateItemsWidth();
+      msnry.appended(newPersonEl);
+
+      // requires relayout
+      msnry.layout();  
+    }
     
-    updateItemsWidth();
-    msnry.appended(newPersonEl);
-
-    // requires relayout
-    msnry.layout();
-
     var len = container.find('.person-item').length;
     if (len > 10) {
       $("html, body").animate({ scrollTop: $(document).height() }, "slow");
