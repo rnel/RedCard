@@ -56,11 +56,6 @@
 }
 
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-
-
 
 - (void)getUserData {
     // Trying out using dispatch_semaphore to do wait for both calls to complete and collate the data
@@ -83,8 +78,9 @@
     });
 
     dispatch_async(queue, ^{
+        NSString *widthAndHeight =[@(RCFBProfileImageWidth * 2) stringValue];
         [self.fbManager GET:@"me/picture/"
-                 parameters:@{@"redirect":@"false", @"width":[@(RCFBProfileImageWidth * 2) stringValue]}
+                 parameters:@{@"redirect":@"false", @"width":widthAndHeight, @"height":widthAndHeight}
                     success:^(id responseObject){
                         [parameters addEntriesFromDictionary:responseObject[@"data"]];
                         dispatch_semaphore_signal(sema);
