@@ -42,27 +42,27 @@ var db = require('./lib/db');
 
 
 app.post('/addperson', function(req, res) {
-  // console.log("Adding person: ", req.body);
+  console.log("Adding person: ", req.body);
 
   var body = req.body;
-  var newPerson = {
-    'id': '',
-    'first_name': '',
-    'last_name': '',
-    'url': ''
-  };
+  var newPerson = {};
 
-  for (var key in newPerson) {
-    if (!body.hasOwnProperty(key)) {
-      res.statusCode = 400;
-      return res.send('Error 400: Post syntax incorrect.');
-    };
-  };
+  // We may not need to check the post body
+  // for (var key in newPerson) {
+  //   if (!body.hasOwnProperty(key)) {
+  //     res.statusCode = 400;
+  //     return res.send('Error 400: Post syntax incorrect.');
+  //   };
+  // };
 
   newPerson.id = body.id;
   newPerson.first_name = body.first_name;
   newPerson.last_name = body.last_name;
   newPerson.url = body.url;
+  newPerson.gender = body.gender;
+  newPerson.location = body.location.name;
+  newPerson.bio = body.bio;
+  newPerson.birthday = body.birthday;
 
   // TODO: Change to add to DB
   db.add(newPerson, function(err, result){
@@ -74,7 +74,7 @@ app.post('/addperson', function(req, res) {
       res.json(200, {message: 'Success'});
     }
   });
-  
+
   // persons.push(newPerson);
   // console.log(persons[persons.length-1])
   // connectedSocket.emit('add person', persons[persons.length-1]);
