@@ -50,7 +50,24 @@
 
 
 - (void)beaconManager:(MNBeaconManager *)manager didExitRegion:(CLBeaconRegion *)region {
-    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.UID] parameters:nil success:nil failure:nil];
+    __block UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+        backgroundTask = UIBackgroundTaskInvalid;
+    }];
+    
+    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.UID] parameters:nil
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];
+                                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                                         backgroundTask = UIBackgroundTaskInvalid;
+                                     }
+                                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                                         backgroundTask = UIBackgroundTaskInvalid;
+                                     }
+     ];
+    [self presentLocalNotificationNowWithAlertBody:@"Leaving region" action:@"Launch app"];
+
 }
 
 
