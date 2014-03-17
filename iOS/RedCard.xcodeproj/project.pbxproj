@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2843F1EC18D7058900A35856 /* RCTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2843F1EB18D7058900A35856 /* RCTableViewCell.m */; };
 		287920B718D1610400688DDF /* RCConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 287920B518D1610400688DDF /* RCConstants.m */; };
 		287920B818D1610400688DDF /* MNBeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 287920B618D1610400688DDF /* MNBeaconManager.m */; };
 		287920BC18D1627100688DDF /* RCRegionObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 287920BB18D1627100688DDF /* RCRegionObserver.m */; };
@@ -47,6 +48,8 @@
 
 /* Begin PBXFileReference section */
 		0E3F90AA3FB74D28AB2A2FC9 /* Pods-RedCardTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RedCardTests.xcconfig"; path = "Pods/Pods-RedCardTests.xcconfig"; sourceTree = "<group>"; };
+		2843F1EA18D7058900A35856 /* RCTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableViewCell.h; sourceTree = "<group>"; };
+		2843F1EB18D7058900A35856 /* RCTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableViewCell.m; sourceTree = "<group>"; };
 		287920B418D1610400688DDF /* MNBeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNBeaconManager.h; sourceTree = "<group>"; };
 		287920B518D1610400688DDF /* RCConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCConstants.m; sourceTree = "<group>"; };
 		287920B618D1610400688DDF /* MNBeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNBeaconManager.m; sourceTree = "<group>"; };
@@ -176,6 +179,8 @@
 				287920C418D17F7800688DDF /* RCFacebookManager.m */,
 				AEA1290C18D0893900895FD6 /* RCMainViewController.h */,
 				AEA1290D18D0893900895FD6 /* RCMainViewController.m */,
+				2843F1EA18D7058900A35856 /* RCTableViewCell.h */,
+				2843F1EB18D7058900A35856 /* RCTableViewCell.m */,
 				287920BD18D163F100688DDF /* RCLoginViewController.h */,
 				287920BE18D163F100688DDF /* RCLoginViewController.m */,
 				AEA1290F18D0893900895FD6 /* RCFlipsideViewController.h */,
@@ -386,6 +391,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2843F1EC18D7058900A35856 /* RCTableViewCell.m in Sources */,
 				287920B818D1610400688DDF /* MNBeaconManager.m in Sources */,
 				287920C518D17F7800688DDF /* RCFacebookManager.m in Sources */,
 				AEA1290418D0893900895FD6 /* main.m in Sources */,
