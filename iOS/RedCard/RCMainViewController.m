@@ -12,12 +12,15 @@
 #import "RCLoginViewController.h"
 #import "RCFacebookManager.h"
 #import "RCConstants.h"
+#import "RCTableViewCell.h"
 
-
-@interface RCMainViewController ()
+@interface RCMainViewController () <UITableViewDataSource>
 
 @property (nonatomic, strong) RCFacebookManager *fbManager;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIButton *refreshButton;
+@property (nonatomic ,strong) NSArray *personsInRoom;
 @end
 
 @implementation RCMainViewController
@@ -31,7 +34,9 @@
     self.fbManager = [[RCFacebookManager alloc] init];
     self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
     self.profileImageView.clipsToBounds = YES;
-
+    self.refreshButton.enabled = NO;
+    
+    self.tableView.dataSource = self;
 }
 
 
@@ -53,12 +58,43 @@
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - UITableViewDelegate
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.personsInRoom.count;
+}
 
 
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    RCTableViewCell *cell = (RCTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"RCMainControllerCell" forIndexPath:indexPath];
+    NSDictionary *person = self.personsInRoom[indexPath.row];
+    
+    cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:person[@"url"]]]];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", person[@"first_name"], person[@"last_name"]];
+    return cell;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)getUserData {
     // Trying out using dispatch_semaphore to do wait for both calls to complete and collate the data
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    [manager GET:@"http://192.168.1.76:1337/getpersons" parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject){
+             self.personsInRoom = responseObject[@"result"];
+             self.refreshButton.enabled = YES;
+             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+         }
+         failure:nil
+     ];
+    
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     __block NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
 
@@ -82,18 +118,24 @@
                     success:^(id responseObject){
                         [parameters addEntriesFromDictionary:responseObject[@"data"]];
                         dispatch_semaphore_signal(sema);
-                        self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:parameters[@"url"]]]];
 
+                        dispatch_async(queue, ^{
+                            NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:parameters[@"url"]]];
+                            
+                            dispatch_sync(dispatch_get_main_queue(), ^{
+                                self.profileImageView.image = [UIImage imageWithData:imageData];
+                            });
+                        });
                     }
                     failure:^(NSError *error){
                         dispatch_semaphore_signal(sema);
                     }];
-
     });
 
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     
+
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
         [manager POST:@"http://192.168.1.76:1337/addperson"
            parameters:parameters
@@ -105,6 +147,31 @@
               }
          ];
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Actions
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+- (IBAction)pingButtonTapped:(id)sender {
+    [[AFHTTPRequestOperationManager manager] GET:[NSString stringWithFormat:@"http://192.168.1.76:1337/focusperson/%@", self.fbManager.userID]
+                                      parameters:nil
+                                         success:nil
+                                         failure:nil];
+}
+
+
+- (IBAction)refreshButtonTapped:(id)sender {
+    self.refreshButton.enabled = NO;
+    
+    [[AFHTTPRequestOperationManager manager] GET:@"http://192.168.1.76:1337/getpersons" parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject){
+             self.personsInRoom = responseObject[@"result"];
+             self.refreshButton.enabled = YES;
+             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+         }
+         failure:nil
+     ];
 }
 
 

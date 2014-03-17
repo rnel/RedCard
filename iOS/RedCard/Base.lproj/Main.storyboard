@@ -29,25 +29,112 @@
                                     <segue destination="kIf-nA-PKG" kind="modal" identifier="showAlternate" modalTransitionStyle="flipHorizontal" id="ZEO-Qe-X3j"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UEr-Ey-8IA">
-                                <rect key="frame" x="40" y="164" width="240" height="240"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3MF-BK-Cqt">
+                                <rect key="frame" x="0.0" y="20" width="320" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UEr-Ey-8IA">
+                                        <rect key="frame" x="10" y="10" width="60" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="Od6-yo-y8V"/>
+                                            <constraint firstAttribute="height" constant="60" id="eiq-2E-J9y"/>
+                                        </constraints>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q2A-uG-G8m">
+                                        <rect key="frame" x="228" y="25" width="46" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Ping">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="pingButtonTapped:" destination="rQl-PL-IFJ" eventType="touchUpInside" id="tHc-tg-5NZ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7B5-ml-h5D">
+                                        <rect key="frame" x="100" y="25" width="94" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <state key="normal" title="Update Room">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="pingButtonTapped:" destination="rQl-PL-IFJ" eventType="touchUpInside" id="Dms-V3-zG5"/>
+                                            <action selector="refreshButtonTapped:" destination="rQl-PL-IFJ" eventType="touchUpInside" id="j9k-7b-iks"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.97249842171717171" green="0.97249842171717171" blue="0.97249842171717171" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="240" id="Od6-yo-y8V"/>
-                                    <constraint firstAttribute="height" constant="240" id="eiq-2E-J9y"/>
+                                    <constraint firstItem="UEr-Ey-8IA" firstAttribute="top" secondItem="3MF-BK-Cqt" secondAttribute="top" constant="10" id="1Dv-87-who"/>
+                                    <constraint firstAttribute="height" constant="80" id="TXm-xf-Saj"/>
+                                    <constraint firstItem="UEr-Ey-8IA" firstAttribute="leading" secondItem="3MF-BK-Cqt" secondAttribute="leading" constant="10" id="gUs-vj-BG4"/>
                                 </constraints>
-                            </imageView>
+                            </view>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="    PEOPLE IN ROOM" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yNU-jQ-kMv">
+                                <rect key="frame" x="0.0" y="100" width="320" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.97254908080000002" green="0.0" blue="0.1098039299" alpha="1" colorSpace="deviceRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="26" id="vpz-zL-ytc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ZHI-UZ-jla">
+                                <rect key="frame" x="0.0" y="130" width="320" height="378"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="RCMainControllerCell" textLabel="tpo-ag-QDb" detailTextLabel="Zjd-nQ-BeH" style="IBUITableViewCellStyleSubtitle" id="DAF-jX-OrD" customClass="RCTableViewCell">
+                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DAF-jX-OrD" id="2k8-sP-Hkc">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tpo-ag-QDb">
+                                                    <rect key="frame" x="15" y="3" width="34" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zjd-nQ-BeH">
+                                                    <rect key="frame" x="15" y="25" width="43" height="15"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="UEr-Ey-8IA" secondAttribute="centerY" id="0XG-Hk-eFC"/>
+                            <constraint firstItem="yNU-jQ-kMv" firstAttribute="leading" secondItem="l9E-07-oys" secondAttribute="leading" id="1eA-wa-pHJ"/>
                             <constraint firstAttribute="trailing" secondItem="jqg-sy-dxO" secondAttribute="trailing" constant="20" symbolic="YES" id="1ym-A3-aKq"/>
-                            <constraint firstAttribute="centerX" secondItem="UEr-Ey-8IA" secondAttribute="centerX" id="FiD-eG-dJS"/>
+                            <constraint firstAttribute="trailing" secondItem="ZHI-UZ-jla" secondAttribute="trailing" id="BeM-qA-y1o"/>
+                            <constraint firstItem="c4s-Xn-x5B" firstAttribute="top" secondItem="ZHI-UZ-jla" secondAttribute="bottom" constant="60" id="IDI-Z4-JkS"/>
+                            <constraint firstAttribute="trailing" secondItem="yNU-jQ-kMv" secondAttribute="trailing" id="MQ2-Q6-YkN"/>
+                            <constraint firstItem="ZHI-UZ-jla" firstAttribute="leading" secondItem="l9E-07-oys" secondAttribute="leading" id="SNO-Ir-mjT"/>
                             <constraint firstAttribute="bottom" secondItem="jqg-sy-dxO" secondAttribute="bottom" constant="20" symbolic="YES" id="Uf2-YL-3zF"/>
+                            <constraint firstItem="3MF-BK-Cqt" firstAttribute="top" secondItem="bfD-tQ-IfD" secondAttribute="bottom" id="Z2q-tz-Qpd"/>
+                            <constraint firstAttribute="trailing" secondItem="3MF-BK-Cqt" secondAttribute="trailing" id="g31-9V-aAw"/>
+                            <constraint firstItem="yNU-jQ-kMv" firstAttribute="top" secondItem="3MF-BK-Cqt" secondAttribute="bottom" id="wGg-qv-iCD"/>
+                            <constraint firstItem="ZHI-UZ-jla" firstAttribute="top" secondItem="yNU-jQ-kMv" secondAttribute="bottom" constant="4" id="xKe-qb-bAM"/>
+                            <constraint firstItem="3MF-BK-Cqt" firstAttribute="leading" secondItem="l9E-07-oys" secondAttribute="leading" id="yiF-gb-LJJ"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="profileImageView" destination="UEr-Ey-8IA" id="kzt-B0-Txt"/>
+                        <outlet property="refreshButton" destination="7B5-ml-h5D" id="MgR-kq-I7g"/>
+                        <outlet property="tableView" destination="ZHI-UZ-jla" id="cpf-jX-Cpt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h4L-l5-tyG" sceneMemberID="firstResponder"/>
@@ -125,7 +212,7 @@
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <string key="text">RedCard uses iBeacon to detect your proximity and display your profile to people in the same area.
 
-Through your connected Facebook RedCard will share your basic info (which are already made public in Facebook) so others in the same area can know who you are.
+Through your connected Facebook account, RedCard will share your basic info (which are already made public in Facebook) so others in the same area can know who you are.
 
 No more worrying if you might have gotten someone's name wrong or completely forgotten about it.
 
