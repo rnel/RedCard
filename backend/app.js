@@ -64,42 +64,33 @@ app.post('/addperson', function(req, res) {
   newPerson.location = (body.location) ? body.location.name : '';
   newPerson.bio = (body.bio) ? body.bio : '';
   newPerson.birthday = (body.birthday) ? body.birthday : '';
-  // newPerson.birthday = (body.birthday) ? body.birthday : '';
 
-  // TODO: Change to add to DB
   db.add(newPerson, function(err, result){
     if(err){
       connectedSocket.emit('add person', -1);
     }else{
       connectedSocket.emit('add person', newPerson);
     }
-    // res.json(200, {message: 'Success'});
   });
-
-  // persons.push(newPerson);
-  // console.log(persons[persons.length-1])
-  // connectedSocket.emit('add person', persons[persons.length-1]);
-
-  // res.json(200, {message: 'Success'});
 });
+
 
 // For Frontend
 app.get('/getpersons', function(req, res) {
   console.log("Retrieving all persons...");
 
-  // TODO: Retrieve from DB
   db.getAll(function(err, results){
-    res.json({err: err, result: results});
+    if (!err) {
+      res.json(200, {result: results});
+    };
   });
-  // res.send('Add success');
-  // res.json(200, {});
 });
+
 
 // For beacon device
 app.delete('/removeperson/:id', function(req, res) {
   console.log("Removing person with id: ", req.params.id);
 
-  // TODO: Remove from DB
   db.del(req.params.id, function(err, result){
     if(err){
       connectedSocket.emit('remove person', -1);
@@ -111,6 +102,13 @@ app.delete('/removeperson/:id', function(req, res) {
   });
 });
 
+
+// Set focus to person with param id
+app.get('/focusperson/:id', function(req, res) {
+  console.log("Focusing on: ", req.params.id);
+
+  connectedSocket.emit('focus person', req.params.id);
+});
 
 
 /***
