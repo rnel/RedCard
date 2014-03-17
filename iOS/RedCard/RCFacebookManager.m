@@ -12,7 +12,8 @@
 
 NSString * const RCFBGraphAPI = @"https://graph.facebook.com/";
 @interface RCFacebookManager ()
-
+@property (nonatomic, strong) ACAccountStore *accountStore;
+@property (nonatomic, strong) ACAccount *account;
 @end
 
 @implementation RCFacebookManager
@@ -30,8 +31,42 @@ NSString * const RCFBGraphAPI = @"https://graph.facebook.com/";
 
 
 
-- (NSString *)UID {
-    return [self.account valueForKeyPath:@"properties.uid"];
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Properties
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSString *)userID {
+    return [[self.account valueForKeyPath:@"properties.uid"] copy];
+}
+
+
+
+- (BOOL)userLoggedIn {
+    return (self.account != nil);
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Facebook Graph
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)loginWithCompletion:(void (^)(BOOL))complete {
+    ACAccountType *accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+    
+    [self.accountStore requestAccessToAccountsWithType:accountType
+                                               options:@{ACFacebookAppIdKey:@"819312108084028",
+                                                         ACFacebookPermissionsKey:@[@"user_birthday", @"email"],
+                                                         ACFacebookAudienceKey: ACFacebookAudienceOnlyMe}
+                                            completion:^(BOOL granted, NSError *error){
+                                                
+                                                if (granted) {
+                                                      self.account = [self.accountStore accountsWithAccountType:accountType].firstObject;
+                                                }
+                                                else {
+                                                    NSLog(@"Facebook login error: %@", error.description);
+                                                }
+                                                complete(granted);
+                                            }
+     ];
 }
 
 

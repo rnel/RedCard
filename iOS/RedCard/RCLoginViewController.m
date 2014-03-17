@@ -7,6 +7,8 @@
 //
 
 #import "RCLoginViewController.h"
+#import "MNBeaconManager.h"
+#import "RCConstants.h"
 
 @interface RCLoginViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
@@ -20,13 +22,23 @@
 
 
 
+- (void)registerBeaconRegion {
+    MNBeaconManager *beaconManager = [[MNBeaconManager alloc] init];
+    CLBeaconRegion *region = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:RCProximityUUIDString]
+                                                                     major:RCBeaconMajorPurple
+                                                                identifier:RCProximityIdentifier];
+    [beaconManager registerBeaconRegion:region];
+}
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - IBAction
 /////////////////////////////////////////////////////////////////////////////////////////////////
 - (IBAction)loginButtonTapped:(id)sender {
     if (![SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unable to login"
-                                                            message:@"Please sign to Facebook via the Settings app on your iPhone."
+                                                            message:@"Please add your Facebook account via the Settings app on your iPhone."
                                                            delegate:nil
                                                   cancelButtonTitle:@"Okay"
                                                   otherButtonTitles:nil];
@@ -35,25 +47,25 @@
     else {
         UIButton* button = (UIButton *)sender;
         button.enabled = NO;
-        
-        ACAccountStore *accountStore = self.fbManager.accountStore;
-        ACAccountType *facebookAccountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
 
-        [accountStore requestAccessToAccountsWithType:facebookAccountType
-                                              options:@{ACFacebookAppIdKey:@"819312108084028",
-                                                        ACFacebookPermissionsKey:@[@"user_birthday", @"email"],
-                                                        ACFacebookAudienceKey: ACFacebookAudienceOnlyMe}
-                                           completion:^(BOOL granted, NSError *error){
-            if (granted) {
-                self.fbManager.account = [accountStore accountsWithAccountType:facebookAccountType].firstObject;
+        [self.fbManager loginWithCompletion:^(BOOL success) {
+            if (success) {
+                [self registerBeaconRegion];
                 [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
             }
             else {
-                NSLog(@"Login %@: %@", @(error.code), error.debugDescription);
+                button.enabled = YES;
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Facebook Sign-in failed"
+                                                                    message:@"Please try again later."
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"Okay"
+                                                          otherButtonTitles:nil];
+                [alertView show];
             }
         }];
     }
 }
+
 
 
 @end

@@ -10,8 +10,9 @@
 @import Accounts;
 
 @interface RCFacebookManager : NSObject
-@property (nonatomic, strong) ACAccountStore *accountStore;
-@property (nonatomic, strong) ACAccount *account;
-@property (nonatomic, readonly) NSString *UID;
+
+@property (nonatomic, copy, readonly) NSString *userID;
+@property (nonatomic, assign, readonly) BOOL userLoggedIn;
+- (void)loginWithCompletion:(void (^)(BOOL success))complete;
 - (void)GET:(NSString *)endPoint parameters:(NSDictionary *)parameters success:(void (^)(id responseObject))success failure:(void (^)(NSError *error))failure;
 @end
