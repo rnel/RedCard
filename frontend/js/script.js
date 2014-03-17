@@ -60,6 +60,12 @@ $(document).ready(function(){
     msnry.layout();
   }
 
+  function focusPerson(id) {
+    container
+      .find('#fb'+id)
+      .effect('shake', {}, 500);
+  }
+
   function updateCount(count) {
     container.removeClass();
 
@@ -140,6 +146,10 @@ $(document).ready(function(){
     removePerson(id);
   });
 
+  socket.on('focus person', function (id){
+    console.log('focus', id);
+    focusPerson(id);
+  });
 
   // test
   window.a = function(id) {

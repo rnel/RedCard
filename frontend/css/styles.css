@@ -69,6 +69,7 @@ p.msg {
 
 .person-details .person-name {
   font-size: 28px;
+  text-transform: capitalize;
 }
 
 .location-holder {

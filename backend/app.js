@@ -64,24 +64,16 @@ app.post('/addperson', function(req, res) {
   newPerson.location = (body.location) ? body.location.name : '';
   newPerson.bio = (body.bio) ? body.bio : '';
   newPerson.birthday = (body.birthday) ? body.birthday : '';
-  // newPerson.birthday = (body.birthday) ? body.birthday : '';
 
-  // TODO: Change to add to DB
   db.add(newPerson, function(err, result){
     if(err){
       connectedSocket.emit('add person', -1);
     }else{
       connectedSocket.emit('add person', newPerson);
     }
-    // res.json(200, {message: 'Success'});
   });
-
-  // persons.push(newPerson);
-  // console.log(persons[persons.length-1])
-  // connectedSocket.emit('add person', persons[persons.length-1]);
-
-  // res.json(200, {message: 'Success'});
 });
+
 
 // For Frontend
 app.get('/getpersons', function(req, res) {
@@ -94,6 +86,7 @@ app.get('/getpersons', function(req, res) {
   // res.send('Add success');
   // res.json(200, {});
 });
+
 
 // For beacon device
 app.delete('/removeperson/:id', function(req, res) {
@@ -111,6 +104,13 @@ app.delete('/removeperson/:id', function(req, res) {
   });
 });
 
+
+// Set focus to person with param id
+app.get('/focusperson/:id', function(req, res) {
+  console.log("Focusing on: ", req.params.id);
+
+  connectedSocket.emit('focus person', req.params.id);
+});
 
 
 /***
