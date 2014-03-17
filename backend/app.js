@@ -79,12 +79,11 @@ app.post('/addperson', function(req, res) {
 app.get('/getpersons', function(req, res) {
   console.log("Retrieving all persons...");
 
-  // TODO: Retrieve from DB
   db.getAll(function(err, results){
-    res.json({err: err, result: results});
+    if (!err) {
+      res.json(200, {result: results});
+    };
   });
-  // res.send('Add success');
-  // res.json(200, {});
 });
 
 
@@ -92,7 +91,6 @@ app.get('/getpersons', function(req, res) {
 app.delete('/removeperson/:id', function(req, res) {
   console.log("Removing person with id: ", req.params.id);
 
-  // TODO: Remove from DB
   db.del(req.params.id, function(err, result){
     if(err){
       connectedSocket.emit('remove person', -1);
