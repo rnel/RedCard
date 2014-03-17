@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 Monokromik. All rights reserved.
 //
 
-@import Social;
-@import Accounts;
 
 #import <AFNetworking.h>
 #import "RCMainViewController.h"
@@ -19,7 +17,6 @@
 @interface RCMainViewController ()
 
 @property (nonatomic, strong) RCFacebookManager *fbManager;
-@property (nonatomic, strong) ACAccount *account;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @end
 
@@ -42,16 +39,17 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (!self.fbManager.account) {
-        RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
-        loginViewController.fbManager = self.fbManager;
-
-        [self presentViewController:loginViewController animated:YES completion:nil];
-    }
-    else{
+    if (self.fbManager.userLoggedIn) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
             [self getUserData];
         });
+
+    }
+    else{
+        RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
+        loginViewController.fbManager = self.fbManager;
+        [self presentViewController:loginViewController animated:YES completion:nil];
+
     }
 }
 
@@ -59,7 +57,7 @@
 
 - (void)getUserData {
     // Trying out using dispatch_semaphore to do wait for both calls to complete and collate the data
-    
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     __block NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
@@ -84,7 +82,6 @@
                     success:^(id responseObject){
                         [parameters addEntriesFromDictionary:responseObject[@"data"]];
                         dispatch_semaphore_signal(sema);
-                        
                         self.profileImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:parameters[@"url"]]]];
 
                     }
@@ -97,15 +94,17 @@
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     
-    [manager POST:@"http://192.168.1.76:1337/addperson"
-       parameters:parameters
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"Sent: %@", parameters);
-          }
-          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSLog(@"Error: %@", error);
-          }
-     ];
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        [manager POST:@"http://192.168.1.76:1337/addperson"
+           parameters:parameters
+              success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                  NSLog(@"Sent: %@", parameters);
+              }
+              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  NSLog(@"Error: %@", error);
+              }
+         ];
+    }
 }
 
 

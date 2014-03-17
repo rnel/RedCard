@@ -45,17 +45,20 @@
 #pragma mark - MNBeaconManagerObserver
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)beaconManager:(MNBeaconManager *)manager didEnterRegion:(CLBeaconRegion *)region {
+    NSLog(@"--------------------->>>>>>> ENTER REGION");
     [self presentLocalNotificationNowWithAlertBody:@"Entering region" action:@"Launch app"];
 }
 
 
 - (void)beaconManager:(MNBeaconManager *)manager didExitRegion:(CLBeaconRegion *)region {
+    NSLog(@"--------------------->>>>>>> EXIT REGION");
+    
     __block UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
     }];
     
-    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.UID] parameters:nil
+    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.userID] parameters:nil
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                          [self presentLocalNotificationNowWithAlertBody:@"Info removed" action:@"Launch app"];
                                          [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
@@ -75,8 +78,9 @@
 - (void)beaconManager:(MNBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     NSArray *nearOrImmediateBeacons = [beacons filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"proximity == %ld || proximity == %ld",
                                                                             CLProximityImmediate, CLProximityNear]];
-    
+    NSLog(@"--------------------->>>>>>> RANGING");
     if (nearOrImmediateBeacons.count > 0) {
+
         [manager stopRangingBeaconsInRegion:region];
         
         self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -132,14 +136,16 @@
     });
     
     dispatch_group_notify(group, queue, ^{
+
         [manager  POST:@"http://192.168.1.76:1337/addperson"
             parameters:parameters
                success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                   [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];
+                  [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];
                    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
                    self.backgroundTask = UIBackgroundTaskInvalid;
                }
                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  [self presentLocalNotificationNowWithAlertBody:@"Info not shared. Unable to reach server`" action:@"Launch app"];
                    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
                    self.backgroundTask = UIBackgroundTaskInvalid;
                }
