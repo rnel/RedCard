@@ -42,7 +42,8 @@ var db = require('./lib/db');
 
 // For beacon device
 app.post('/addperson', function(req, res) {
-  console.log("Adding person: ", req.body);
+  // console.log("Adding person: ", req.body);
+  res.json(200, {message: 'Success'});
 
   var body = req.body;
   var newPerson = {};
@@ -72,7 +73,7 @@ app.post('/addperson', function(req, res) {
     }else{
       connectedSocket.emit('add person', newPerson);
     }
-    res.json(200, {message: 'Success'});
+    // res.json(200, {message: 'Success'});
   });
 
   // persons.push(newPerson);
@@ -120,6 +121,11 @@ io
   .on('connection', function (socket) {
     connectedSocket = socket;
     connectedSocket.emit('***** Connected to server *****');
+
+    db.getAll(function(err, results){
+      connectedSocket.emit('add all person', results);
+    });
+
 });
 
 
