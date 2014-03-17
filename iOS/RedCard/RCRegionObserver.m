@@ -52,7 +52,8 @@
 
 - (void)beaconManager:(MNBeaconManager *)manager didExitRegion:(CLBeaconRegion *)region {
     NSLog(@"--------------------->>>>>>> EXIT REGION");
-    
+    [self presentLocalNotificationNowWithAlertBody:@"Leaving region" action:@"Launch app"];
+
     __block UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
@@ -69,8 +70,6 @@
                                          backgroundTask = UIBackgroundTaskInvalid;
                                      }
      ];
-    [self presentLocalNotificationNowWithAlertBody:@"Leaving region" action:@"Launch app"];
-
 }
 
 
@@ -155,10 +154,12 @@
 
 
 - (void)presentLocalNotificationNowWithAlertBody:(NSString *)bodyString action:(NSString *)actionString {
-    self.localNotification.alertBody = bodyString;
-    self.localNotification.alertAction = actionString;
-    self.localNotification.soundName = UILocalNotificationDefaultSoundName;
+    dispatch_async(dispatch_get_main_queue(), ^(){
+        self.localNotification.alertBody = bodyString;
+        self.localNotification.alertAction = actionString;
+        self.localNotification.soundName = UILocalNotificationDefaultSoundName;
     
-    [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotification];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotification];
+    });
 }
 @end
