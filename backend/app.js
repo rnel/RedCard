@@ -121,6 +121,11 @@ io
   .on('connection', function (socket) {
     connectedSocket = socket;
     connectedSocket.emit('***** Connected to server *****');
+
+    db.getAll(function(err, results){
+      connectedSocket.emit('add all person', results);
+    });
+
 });
 
 

@@ -11,6 +11,7 @@ $(document).ready(function(){
   var template = Handlebars.compile(source);
 
   function addAllPersons(data) {
+    console.log('addAllPersons: ', data);
     container.empty();
 
     $.each(data, function(index, value){
@@ -39,14 +40,14 @@ $(document).ready(function(){
       data.age = (data.birthday) ? getAge(data.birthday) : 'SECRET';
       element = template(data);
       newPersonEl = $(element).appendTo(container);
-      
+
       updateItemsWidth();
       msnry.appended(newPersonEl);
 
       // requires relayout
-      msnry.layout();  
+      msnry.layout();
     }
-    
+
     var len = container.find('.person-item').length;
     if (len > 10) {
       $("html, body").animate({ scrollTop: $(document).height() }, "slow");
@@ -121,6 +122,7 @@ $(document).ready(function(){
 
   socket.on('disconnect', function(){
     console.log('disconected');
+    socket = io.connect('http://192.168.1.76:1337/', {'force new connection': true});
   });
 
   socket.on('add all person', function (data){
