@@ -107,10 +107,11 @@
                         <subviews>
                             <navigationBar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="hED-2o-FLw">
                                 <rect key="frame" x="0.0" y="20" width="320" height="44"/>
-                                <color key="barTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="barTintColor" red="0.97254908084869385" green="0.0" blue="0.1098039299249649" alpha="1" colorSpace="deviceRGB"/>
                                 <items>
                                     <navigationItem title="What is RedCard?" id="caU-JJ-JLf">
                                         <barButtonItem key="leftBarButtonItem" systemItem="done" id="WuG-Ps-ZbD">
+                                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
                                                 <action selector="done:" destination="kIf-nA-PKG" id="j28-pm-V55"/>
                                             </connections>
@@ -118,12 +119,31 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sbg-Hd-cX4">
+                                <rect key="frame" x="20" y="80" width="280" height="458"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <string key="text">RedCard uses iBeacon to detect your proximity and display your profile to people in the same area.
+
+Through your connected Facebook RedCard will share your basic info (which are already made public in Facebook) so others in the same area can know who you are.
+
+No more worrying if you might have gotten someone's name wrong or completely forgotten about it.
+
+With RedCard, you will always know who you are talking to in the room.</string>
+                                <color key="textColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Sbg-Hd-cX4" secondAttribute="trailing" constant="20" id="3Yn-9U-UpM"/>
+                            <constraint firstItem="Sbg-Hd-cX4" firstAttribute="top" secondItem="rBX-Xh-dAM" secondAttribute="bottom" constant="60" id="3uy-lc-JzB"/>
                             <constraint firstItem="hED-2o-FLw" firstAttribute="leading" secondItem="tg4-aq-CMy" secondAttribute="leading" id="4QI-iY-IyT"/>
+                            <constraint firstItem="Sbg-Hd-cX4" firstAttribute="leading" secondItem="tg4-aq-CMy" secondAttribute="leading" constant="20" id="Pco-Cm-aQT"/>
                             <constraint firstItem="hED-2o-FLw" firstAttribute="trailing" secondItem="tg4-aq-CMy" secondAttribute="trailing" id="cVE-3m-sGp"/>
                             <constraint firstItem="hED-2o-FLw" firstAttribute="top" secondItem="rBX-Xh-dAM" secondAttribute="bottom" constant="20" symbolic="YES" id="u68-Qf-AY6"/>
+                            <constraint firstItem="mPd-kI-uoc" firstAttribute="top" secondItem="Sbg-Hd-cX4" secondAttribute="bottom" constant="30" id="z4i-xK-jJf"/>
                         </constraints>
                     </view>
                 </viewController>

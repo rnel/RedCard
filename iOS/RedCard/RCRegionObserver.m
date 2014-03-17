@@ -50,6 +50,7 @@
 }
 
 
+
 - (void)beaconManager:(MNBeaconManager *)manager didExitRegion:(CLBeaconRegion *)region {
     NSLog(@"--------------------->>>>>>> EXIT REGION");
     [self presentLocalNotificationNowWithAlertBody:@"Leaving region" action:@"Launch app"];
