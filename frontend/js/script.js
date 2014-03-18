@@ -120,7 +120,7 @@ $(document).ready(function(){
 
   // Socket IO
   // var socket = io.connect('http://localhost:1337/', {'force new connection': true});
-  var socket = io.connect('http://192.168.1.76:1337/', {'force new connection': true});
+  var socket = io.connect('http://redcard.herokuapp.com/', {'force new connection': true});
 
   socket.on('connect', function(msg){
     console.log('connected');
@@ -128,7 +128,7 @@ $(document).ready(function(){
 
   socket.on('disconnect', function(){
     console.log('disconected');
-    socket = io.connect('http://192.168.1.76:1337/', {'force new connection': true});
+    socket = io.connect('http://redcard.herokuapp.com/', {'force new connection': true});
   });
 
   socket.on('add all person', function (data){
