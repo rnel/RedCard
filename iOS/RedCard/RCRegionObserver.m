@@ -60,7 +60,7 @@
         backgroundTask = UIBackgroundTaskInvalid;
     }];
     
-    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://192.168.1.76:1337/removeperson/%@", self.fbManager.userID] parameters:nil
+    [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://redcard.herokuapp.com/removeperson/%@", self.fbManager.userID] parameters:nil
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                          [self presentLocalNotificationNowWithAlertBody:@"Info removed" action:@"Launch app"];
                                          [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
@@ -137,7 +137,7 @@
     
     dispatch_group_notify(group, queue, ^{
 
-        [manager  POST:@"http://192.168.1.76:1337/addperson"
+        [manager  POST:@"http://redcard.herokuapp.com/addperson"
             parameters:parameters
                success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];

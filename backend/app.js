@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 
 var http = require('http').createServer(app);
-http.listen(process.env.PORT || 1337);
+http.listen(process.env.PORT || 80);
 
 
 var io = require('socket.io').listen(http);
@@ -39,6 +39,12 @@ app.use(bodyParser());
  * init db
  */
 var db = require('./lib/db');
+
+// default
+app.get('/', function(req, res) {
+  res.sendfile(__dirname + '/index.html');
+});
+
 
 // For beacon device
 app.post('/addperson', function(req, res) {

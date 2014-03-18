@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 var config = {
   env: 'development',
   mongo: {
-    uri: 'mongodb://localhost/Redcard',
+    uri: 'mongodb://redcard:kw4redcard@oceanic.mongohq.com:10017/redcard',
     options: {}
   }
 };
@@ -30,9 +30,9 @@ var RCUserSchema = new Schema({
   "last_name": String,
   "url": String,
   "status": Boolean,
-  "gender": String, 
-  "location": String, 
-  "bio": String, 
+  "gender": String,
+  "location": String,
+  "bio": String,
   "birthday": String
 });
 
@@ -105,7 +105,7 @@ var db = {
 
   update: function(userId, data){
     RCUser.find({id: userId}, function(err, user) {
-      
+
     });
   }
 };

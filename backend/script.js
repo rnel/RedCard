@@ -1,7 +1,7 @@
 
 /* Document Ready */
 $(function() {
-  var socket = io.connect('http://localhost:1337/', {'force new connection': true});
+  var socket = io.connect('http://redcard.herokuapp.com/', {'force new connection': true});
 
   socket.on('add person', function (per) {
     console.log("add: ", per);
@@ -18,7 +18,7 @@ $(function() {
   // for beacon device
   $('.addPerson').on('click', function() {
     $.ajax({
-          url: 'http://localhost:1337/addperson',
+          url: 'http://redcard.herokuapp.com/addperson',
           data: {"id": "1", "url": "http://ignoranthistorian.com/wp-content/uploads/2013/11/apple-logo.jpg", "first_name": "ali", "last_name": "baba"},
           dataType: 'text',
           type: 'POST'
@@ -31,7 +31,7 @@ $(function() {
   // for beacon device
   $('.removePerson').on('click', function() {
     $.ajax({
-        url: 'http://localhost:1337/removeperson/1',
+        url: 'http://redcard.herokuapp.com/removeperson/1',
         type: 'DELETE'
       })
       .success(function(data) {
@@ -42,7 +42,7 @@ $(function() {
   // frontend
   $('.getPerson').on('click', function() {
     $.ajax({
-        url: 'http://localhost:1337/getpersons',
+        url: 'http://redcard.herokuapp.com/getpersons',
         type: 'GET'
       })
       .success(function(data) {
