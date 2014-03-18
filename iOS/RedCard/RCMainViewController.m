@@ -85,7 +85,7 @@
 
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    [manager GET:@"http://192.168.1.76:1337/getpersons" parameters:nil
+    [manager GET:@"http://redcard.herokuapp.com/getpersons" parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject){
              self.personsInRoom = responseObject[@"result"];
              self.refreshButton.enabled = YES;
@@ -137,7 +137,7 @@
     
 
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-        [manager POST:@"http://192.168.1.76:1337/addperson"
+        [manager POST:@"http://redcard.herokuapp.com/addperson"
            parameters:parameters
               success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   NSLog(@"Sent: %@", parameters);
@@ -154,7 +154,7 @@
 #pragma mark - Actions
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (IBAction)pingButtonTapped:(id)sender {
-    [[AFHTTPRequestOperationManager manager] GET:[NSString stringWithFormat:@"http://192.168.1.76:1337/focusperson/%@", self.fbManager.userID]
+    [[AFHTTPRequestOperationManager manager] GET:[NSString stringWithFormat:@"http://redcard.herokuapp.com/focusperson/%@", self.fbManager.userID]
                                       parameters:nil
                                          success:nil
                                          failure:nil];
@@ -164,7 +164,7 @@
 - (IBAction)refreshButtonTapped:(id)sender {
     self.refreshButton.enabled = NO;
     
-    [[AFHTTPRequestOperationManager manager] GET:@"http://192.168.1.76:1337/getpersons" parameters:nil
+    [[AFHTTPRequestOperationManager manager] GET:@"http://redcard.herokuapp.com/getpersons" parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject){
              self.personsInRoom = responseObject[@"result"];
              self.refreshButton.enabled = YES;
