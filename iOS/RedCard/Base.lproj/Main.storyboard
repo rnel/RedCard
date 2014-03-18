@@ -60,7 +60,6 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="pingButtonTapped:" destination="rQl-PL-IFJ" eventType="touchUpInside" id="Dms-V3-zG5"/>
                                             <action selector="refreshButtonTapped:" destination="rQl-PL-IFJ" eventType="touchUpInside" id="j9k-7b-iks"/>
                                         </connections>
                                     </button>
