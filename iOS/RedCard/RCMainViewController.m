@@ -71,8 +71,7 @@
     RCTableViewCell *cell = (RCTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"RCMainControllerCell" forIndexPath:indexPath];
     NSDictionary *person = self.personsInRoom[indexPath.row];
     
-    cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:person[@"url"]]]];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", person[@"first_name"], person[@"last_name"]];
+    cell.person = person;
     return cell;
 }
 

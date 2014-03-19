@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface RCTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (nonatomic, strong)NSDictionary *person;
 @end
