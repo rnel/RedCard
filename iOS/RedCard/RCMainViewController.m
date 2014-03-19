@@ -37,40 +37,43 @@
     self.refreshButton.enabled = NO;
     
     self.tableView.dataSource = self;
+    
+    
+    if (self.fbManager.userLoggedIn) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+            [self getUserData];
+        });
+        
+    }
+    else{
+        RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
+        loginViewController.fbManager = self.fbManager;
+        [self presentViewController:loginViewController animated:YES completion:nil];
+        
+    }
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    [super viewWillAppear:animated];
 }
 
 
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    if (self.fbManager.userLoggedIn) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
-            [self getUserData];
-        });
-
-    }
-    else{
-        RCLoginViewController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RCLoginViewController"];
-        loginViewController.fbManager = self.fbManager;
-        [self presentViewController:loginViewController animated:YES completion:nil];
-
-    }
+    [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self.navigationController setNavigationBarHidden:YES animated:animated];
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:NO animated:animated];
     [super viewWillDisappear:animated];
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - UITableViewDelegate

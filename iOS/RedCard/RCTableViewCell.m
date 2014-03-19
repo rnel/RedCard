@@ -29,6 +29,7 @@
 - (void)setPerson:(NSDictionary *)person {
     _person = person;
     
+    self.imageView.image = [UIImage imageNamed:@"Profile Picture"];
     self.textLabel.text = [NSString stringWithFormat:@"%@ %@", person[@"first_name"], person[@"last_name"]];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
