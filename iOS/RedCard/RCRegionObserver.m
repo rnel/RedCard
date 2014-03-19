@@ -44,17 +44,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - MNBeaconManagerObserver
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)beaconManager:(MNBeaconManager *)manager didEnterRegion:(CLBeaconRegion *)region {
-    NSLog(@"--------------------->>>>>>> ENTER REGION");
-    [self presentLocalNotificationNowWithAlertBody:@"Entering region" action:@"Launch app"];
-}
-
-
 
 - (void)beaconManager:(MNBeaconManager *)manager didExitRegion:(CLBeaconRegion *)region {
-    NSLog(@"--------------------->>>>>>> EXIT REGION");
-    [self presentLocalNotificationNowWithAlertBody:@"Leaving region" action:@"Launch app"];
-
+    [manager stopRangingBeaconsInRegion:region];
+    
     __block UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
@@ -62,7 +55,7 @@
     
     [self.HTTPRequestOperationManager DELETE:[NSString stringWithFormat:@"http://redcard.herokuapp.com/removeperson/%@", self.fbManager.userID] parameters:nil
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         [self presentLocalNotificationNowWithAlertBody:@"Info removed" action:@"Launch app"];
+                                         [self presentLocalNotificationNowWithAlertBody:@"Info not longer shared." action:@"Launch app"];
                                          [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
                                          backgroundTask = UIBackgroundTaskInvalid;
                                      }
@@ -78,7 +71,6 @@
 - (void)beaconManager:(MNBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     NSArray *nearOrImmediateBeacons = [beacons filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"proximity == %ld || proximity == %ld",
                                                                             CLProximityImmediate, CLProximityNear]];
-    NSLog(@"--------------------->>>>>>> RANGING");
     if (nearOrImmediateBeacons.count > 0) {
 
         [manager stopRangingBeaconsInRegion:region];
@@ -140,12 +132,12 @@
         [manager  POST:@"http://redcard.herokuapp.com/addperson"
             parameters:parameters
                success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  [self presentLocalNotificationNowWithAlertBody:@"Info shared" action:@"Launch app"];
+                  [self presentLocalNotificationNowWithAlertBody:@"Info shared." action:@"Launch app"];
                    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
                    self.backgroundTask = UIBackgroundTaskInvalid;
                }
                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  [self presentLocalNotificationNowWithAlertBody:@"Info not shared. Unable to reach server`" action:@"Launch app"];
+                  [self presentLocalNotificationNowWithAlertBody:@"Info not shared. Unable to reach server." action:@"Launch app"];
                    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundTask];
                    self.backgroundTask = UIBackgroundTaskInvalid;
                }
