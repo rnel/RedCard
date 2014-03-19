@@ -182,6 +182,7 @@
     
     [[AFHTTPRequestOperationManager manager] GET:@"http://redcard.herokuapp.com/getpersons" parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject){
+             NSLog(@"refreshing: %@", responseObject);
              self.personsInRoom = responseObject[@"result"];
              self.refreshButton.enabled = YES;
              [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
