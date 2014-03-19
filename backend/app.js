@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(bodyParser());
-
+app.use(express.static(__dirname + '/frontend'));
 
 // app.all('*', function(req, res, next) {
 //   res.writeHead(200, { 'Content-Type': 'text/plain' });
