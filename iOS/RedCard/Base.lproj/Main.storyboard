@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="12E3067" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="rQl-PL-IFJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="12E3067" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="t6f-9E-wJP">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="81t-I0-272">
+            <objects>
+                <navigationController definesPresentationContext="YES" navigationBarHidden="YES" id="t6f-9E-wJP" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ONh-rs-Dzj">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="rQl-PL-IFJ" kind="relationship" relationship="rootViewController" id="x1P-HX-xdt"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SDz-p8-pTT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-471" y="175"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="rV5-Y2-ghB">
             <objects>
@@ -41,8 +56,8 @@
                                             <constraint firstAttribute="height" constant="60" id="eiq-2E-J9y"/>
                                         </constraints>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q2A-uG-G8m">
-                                        <rect key="frame" x="228" y="25" width="46" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q2A-uG-G8m">
+                                        <rect key="frame" x="245" y="25" width="30" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         <state key="normal" title="Ping">
@@ -52,8 +67,8 @@
                                             <action selector="pingButtonTapped:" destination="rQl-PL-IFJ" eventType="touchUpInside" id="tHc-tg-5NZ"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7B5-ml-h5D">
-                                        <rect key="frame" x="100" y="25" width="94" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7B5-ml-h5D">
+                                        <rect key="frame" x="113" y="25" width="94" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         <state key="normal" title="Update Room">
@@ -68,7 +83,11 @@
                                 <constraints>
                                     <constraint firstItem="UEr-Ey-8IA" firstAttribute="top" secondItem="3MF-BK-Cqt" secondAttribute="top" constant="10" id="1Dv-87-who"/>
                                     <constraint firstAttribute="height" constant="80" id="TXm-xf-Saj"/>
+                                    <constraint firstAttribute="centerY" secondItem="q2A-uG-G8m" secondAttribute="centerY" id="XBT-a7-CWa"/>
+                                    <constraint firstAttribute="centerY" secondItem="7B5-ml-h5D" secondAttribute="centerY" id="aBd-bE-83L"/>
                                     <constraint firstItem="UEr-Ey-8IA" firstAttribute="leading" secondItem="3MF-BK-Cqt" secondAttribute="leading" constant="10" id="gUs-vj-BG4"/>
+                                    <constraint firstItem="q2A-uG-G8m" firstAttribute="leading" secondItem="7B5-ml-h5D" secondAttribute="trailing" constant="38" id="mFZ-YE-Vth"/>
+                                    <constraint firstAttribute="trailing" secondItem="q2A-uG-G8m" secondAttribute="trailing" constant="45" id="qrn-cW-bRa"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="    PEOPLE IN ROOM" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yNU-jQ-kMv">
@@ -87,11 +106,11 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="RCMainControllerCell" textLabel="tpo-ag-QDb" detailTextLabel="Zjd-nQ-BeH" imageView="YpU-Zr-bLF" style="IBUITableViewCellStyleSubtitle" id="DAF-jX-OrD" customClass="RCTableViewCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="RCMainControllerCell" textLabel="tpo-ag-QDb" detailTextLabel="Zjd-nQ-BeH" imageView="YpU-Zr-bLF" style="IBUITableViewCellStyleSubtitle" id="DAF-jX-OrD" customClass="RCTableViewCell">
                                         <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DAF-jX-OrD" id="2k8-sP-Hkc">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tpo-ag-QDb">
@@ -114,6 +133,9 @@
                                                 </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="cx7-VZ-DKT" kind="push" id="gl3-ka-sPM"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -134,6 +156,7 @@
                             <constraint firstItem="3MF-BK-Cqt" firstAttribute="leading" secondItem="l9E-07-oys" secondAttribute="leading" id="yiF-gb-LJJ"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="iaI-dR-8R2"/>
                     <connections>
                         <outlet property="profileImageView" destination="UEr-Ey-8IA" id="kzt-B0-Txt"/>
                         <outlet property="refreshButton" destination="7B5-ml-h5D" id="MgR-kq-I7g"/>
@@ -143,6 +166,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h4L-l5-tyG" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="25" y="175"/>
+        </scene>
+        <!--User Profile View Controller-->
+        <scene sceneID="8Mb-O8-6tZ">
+            <objects>
+                <viewController id="cx7-VZ-DKT" customClass="RCUserProfileViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="N55-LL-iAI"/>
+                        <viewControllerLayoutGuide type="bottom" id="Mtx-II-CG3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gfh-Hi-sXi">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="rh4-Sz-D5B"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CTC-Hb-QaL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="564" y="175"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="dcp-eE-oBl">
@@ -243,7 +285,7 @@ With RedCard, you will always know who you are talking to in the room.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xlJ-1o-FvB" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="461" y="175"/>
+            <point key="canvasLocation" x="564" y="-581"/>
         </scene>
     </scenes>
     <resources>
