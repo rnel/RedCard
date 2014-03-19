@@ -41,6 +41,8 @@
     
     if (self.fbManager.userLoggedIn) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+            self.refreshButton.enabled = NO;
+            [self getRoomUpdate];
             [self getUserData];
         });
         
@@ -98,18 +100,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)getUserData {
     // Trying out using dispatch_semaphore to do wait for both calls to complete and collate the data
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    
-    [manager GET:@"http://redcard.herokuapp.com/getpersons" parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject){
-             self.personsInRoom = responseObject[@"result"];
-             self.refreshButton.enabled = YES;
-             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-         }
-         failure:nil
-     ];
-    
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     __block NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
@@ -150,19 +140,20 @@
 
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-    
+}
 
-    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-        [manager POST:@"http://redcard.herokuapp.com/addperson"
-           parameters:parameters
-              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  NSLog(@"Sent: %@", parameters);
-              }
-              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  NSLog(@"Error: %@", error);
-              }
-         ];
-    }
+
+
+- (void)getRoomUpdate {
+    [[AFHTTPRequestOperationManager manager] GET:@"http://redcard.herokuapp.com/getpersons" parameters:nil
+                                         success:^(AFHTTPRequestOperation *operation, id responseObject){
+                                             NSLog(@"refreshing: %@", responseObject);
+                                             self.personsInRoom = responseObject[@"result"];
+                                             self.refreshButton.enabled = YES;
+                                             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                         }
+                                         failure:nil
+     ];
 }
 
 
@@ -179,16 +170,7 @@
 
 - (IBAction)refreshButtonTapped:(id)sender {
     self.refreshButton.enabled = NO;
-    
-    [[AFHTTPRequestOperationManager manager] GET:@"http://redcard.herokuapp.com/getpersons" parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject){
-             NSLog(@"refreshing: %@", responseObject);
-             self.personsInRoom = responseObject[@"result"];
-             self.refreshButton.enabled = YES;
-             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-         }
-         failure:nil
-     ];
+    [self getRoomUpdate];
 }
 
 
