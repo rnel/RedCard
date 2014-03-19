@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2809C5CB18D9388A0091EED1 /* Profile Picture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2809C5CA18D9388A0091EED1 /* Profile Picture@2x.png */; };
+		2809C5CE18D93D100091EED1 /* RCUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2809C5CD18D93D100091EED1 /* RCUserProfileViewController.m */; };
 		2843F1EC18D7058900A35856 /* RCTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2843F1EB18D7058900A35856 /* RCTableViewCell.m */; };
 		287920B718D1610400688DDF /* RCConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 287920B518D1610400688DDF /* RCConstants.m */; };
 		287920B818D1610400688DDF /* MNBeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 287920B618D1610400688DDF /* MNBeaconManager.m */; };
@@ -50,6 +51,8 @@
 /* Begin PBXFileReference section */
 		0E3F90AA3FB74D28AB2A2FC9 /* Pods-RedCardTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RedCardTests.xcconfig"; path = "Pods/Pods-RedCardTests.xcconfig"; sourceTree = "<group>"; };
 		2809C5CA18D9388A0091EED1 /* Profile Picture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Profile Picture@2x.png"; sourceTree = "<group>"; };
+		2809C5CC18D93D100091EED1 /* RCUserProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCUserProfileViewController.h; sourceTree = "<group>"; };
+		2809C5CD18D93D100091EED1 /* RCUserProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCUserProfileViewController.m; sourceTree = "<group>"; };
 		2843F1EA18D7058900A35856 /* RCTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableViewCell.h; sourceTree = "<group>"; };
 		2843F1EB18D7058900A35856 /* RCTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableViewCell.m; sourceTree = "<group>"; };
 		287920B418D1610400688DDF /* MNBeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNBeaconManager.h; sourceTree = "<group>"; };
@@ -182,6 +185,8 @@
 				287920C418D17F7800688DDF /* RCFacebookManager.m */,
 				AEA1290C18D0893900895FD6 /* RCMainViewController.h */,
 				AEA1290D18D0893900895FD6 /* RCMainViewController.m */,
+				2809C5CC18D93D100091EED1 /* RCUserProfileViewController.h */,
+				2809C5CD18D93D100091EED1 /* RCUserProfileViewController.m */,
 				2843F1EA18D7058900A35856 /* RCTableViewCell.h */,
 				2843F1EB18D7058900A35856 /* RCTableViewCell.m */,
 				287920BD18D163F100688DDF /* RCLoginViewController.h */,
@@ -402,6 +407,7 @@
 				AEA1291118D0893900895FD6 /* RCFlipsideViewController.m in Sources */,
 				AEA1290818D0893900895FD6 /* RCAppDelegate.m in Sources */,
 				AEA1290E18D0893900895FD6 /* RCMainViewController.m in Sources */,
+				2809C5CE18D93D100091EED1 /* RCUserProfileViewController.m in Sources */,
 				287920B718D1610400688DDF /* RCConstants.m in Sources */,
 				287920BC18D1627100688DDF /* RCRegionObserver.m in Sources */,
 				287920BF18D163F100688DDF /* RCLoginViewController.m in Sources */,
